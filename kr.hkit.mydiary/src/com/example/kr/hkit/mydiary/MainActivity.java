@@ -1,20 +1,23 @@
 package com.example.kr.hkit.mydiary;
 
+
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
+import android.webkit.WebView.FindListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity
@@ -55,7 +58,7 @@ public class MainActivity extends Activity
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
+  /*      switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
                 break;
@@ -65,7 +68,10 @@ public class MainActivity extends Activity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
-        }
+            case 4:
+                mTitle = getString(R.string.title_section4);
+                break;
+        }*/
     }
 
     public void restoreActionBar() {
@@ -130,8 +136,8 @@ public class MainActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            
+            
             return rootView;
         }
 
@@ -142,5 +148,24 @@ public class MainActivity extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+    
 
+
+	public static class ListFragment extends Fragment{
+		TextView diaryTitleInList;
+		TextView diaryContentInList;
+		ImageView diaryImgInList;
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View root = inflater.inflate(R.layout.list_fragment, container, false);
+			diaryTitleInList = (TextView) root.findViewById(R.id.diary_title_inlist);
+			diaryContentInList = (TextView) root.findViewById(R.id.diary_content_inlist);
+			diaryImgInList = (ImageView) root.findViewById(R.id.diary_image_inlist);
+			
+			return root;
+		}
+	}
+    
 }

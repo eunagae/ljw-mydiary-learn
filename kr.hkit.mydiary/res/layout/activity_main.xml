@@ -14,7 +14,15 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <fragment
+            android:id="@+id/diary_list"
+            android:name="com.example.kr.hkit.mydiary.MainActivity$ListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+    </FrameLayout>
 
     <!--
          android:layout_gravity="start" tells DrawerLayout to treat
