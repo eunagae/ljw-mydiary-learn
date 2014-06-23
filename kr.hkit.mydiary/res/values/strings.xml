@@ -2,9 +2,10 @@
 <resources>
 
     <string name="app_name">이름을뭘로할까</string>
-    <string name="title_section1">사진으로 정렬</string>
-    <string name="title_section2">내가 들른곳</string>
-    <string name="title_section3">설정</string>
+    <string name="title_section1">시간으로 정렬</string>
+    <string name="title_section2">사진으로 정렬</string>
+    <string name="title_section3">내가 들른곳</string>
+    <string name="title_section4">설정</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
