@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+
+        <EditText
+            android:id="@+id/write_diary_title_edit"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:ems="10" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/write_diary_writesubmit_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_writesubmit_btn" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/write_diary_daypicker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_daypicker_btn" />
+
+        <Button
+            android:id="@+id/write_diary_datepicker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_datepicker_btn" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/write_diary_context_edit"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="7"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/write_diary_imgpicker_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_imgpicker_btn" />
+
+        <Button
+            android:id="@+id/write_diary_musicpicker_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_musicpicker_btn" />
+
+        <Button
+            android:id="@+id/write_diary_locationpicker_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_locationpicker_btn" />
+        
+        <Button
+            android:id="@+id/write_diary_urllink_btn"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="mOnClick"
+            android:text="@string/write_diary_urllink_btn" />
+    </LinearLayout>
+
+</LinearLayout>
