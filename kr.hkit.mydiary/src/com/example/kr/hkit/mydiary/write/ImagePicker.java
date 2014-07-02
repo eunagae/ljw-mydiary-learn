@@ -35,9 +35,11 @@ public class ImagePicker extends Activity {
 	public int getPictureCount() {
 		return pictureCount;
 	}
-	public void addPictureCount() {
-		this.pictureCount++;
+	
+	public void setPictureCount(int pictureCount) {
+		this.pictureCount = pictureCount;
 	}
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,12 @@ public class ImagePicker extends Activity {
 
 		
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView1));
+		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView2));
+		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView3));
+		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView4));
+		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView5));
+		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView6));
+		
 	}
 
 	/**
@@ -63,14 +71,13 @@ public class ImagePicker extends Activity {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 		// 임시로 사용할 파일의 경로를 생성
-		String url = "tmp_" + String.valueOf(System.currentTimeMillis())
-				+ ".jpg";
-		mImageCaptureUri = Uri.fromFile(new File(Environment
-				.getExternalStorageDirectory(), url));
+		String url = "tmp_" + String.valueOf(System.currentTimeMillis())+ ".jpg";
+		mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
 
 		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
 				mImageCaptureUri);
 		intent.putExtra("path", mImageCaptureUri.getPath());
+		
 		// 특정기기에서 사진을 저장못하는 문제가 있어 다음을 주석처리 합니다.
 		// intent.putExtra("return-data", true);
 		startActivityForResult(intent, PICK_FROM_CAMERA);
@@ -130,6 +137,8 @@ public class ImagePicker extends Activity {
 		DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				
+				setPictureCount(which);
 				doTakeAlbumAction();
 			}
 		};
@@ -137,7 +146,8 @@ public class ImagePicker extends Activity {
 		DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				pictureLists.get(0).setImageBitmap(null);;
+				Toast.makeText(ImagePicker.this, Integer.toString(which), 0).show();
+				pictureLists.get(which).setImageBitmap(null);
 			}
 		};
 
