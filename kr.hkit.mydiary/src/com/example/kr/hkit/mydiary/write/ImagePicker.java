@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.kr.hkit.mydiary.MainActivity;
 import com.example.kr.hkit.mydiary.R;
 
 public class ImagePicker extends Activity {
@@ -26,34 +27,33 @@ public class ImagePicker extends Activity {
 	private static final int PICK_FROM_ALBUM = 1;
 	private static final int CROP_FROM_CAMERA = 2;
 
-	
 	private Uri mImageCaptureUri;
-	private LinkedList<ImageView>  pictureLists  = new LinkedList<ImageView>();
+	private LinkedList<ImageView> pictureLists = new LinkedList<ImageView>();
+	private LinkedList<String> picturePathLists = new LinkedList<String>();
 	private int pictureCount;
+
 	//
 
 	public int getPictureCount() {
 		return pictureCount;
 	}
-	
+
 	public void setPictureCount(int pictureCount) {
 		this.pictureCount = pictureCount;
 	}
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.imagepicker);
 
-		
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView1));
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView2));
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView3));
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView4));
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView5));
 		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView6));
-		
+
 	}
 
 	/**
@@ -71,13 +71,15 @@ public class ImagePicker extends Activity {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 		// 임시로 사용할 파일의 경로를 생성
-		String url = "tmp_" + String.valueOf(System.currentTimeMillis())+ ".jpg";
-		mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
+		String url = "tmp_" + String.valueOf(System.currentTimeMillis())
+				+ ".jpg";
+		mImageCaptureUri = Uri.fromFile(new File(Environment
+				.getExternalStorageDirectory(), url));
 
 		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
 				mImageCaptureUri);
 		intent.putExtra("path", mImageCaptureUri.getPath());
-		
+
 		// 특정기기에서 사진을 저장못하는 문제가 있어 다음을 주석처리 합니다.
 		// intent.putExtra("return-data", true);
 		startActivityForResult(intent, PICK_FROM_CAMERA);
@@ -109,40 +111,49 @@ public class ImagePicker extends Activity {
 		 * if(f.exists()) { f.delete(); }
 		 */
 		case PICK_FROM_ALBUM: {
-			String picturePath = data.getData().getPath();
-			pictureLists.get(getPictureCount()).setImageURI(data.getData());
-			//addPictureCount();
-			Toast.makeText(ImagePicker.this, picturePath, 0).show();
-			break;
+				String picturePath = data.getData().getPath();
+				pictureLists.get(getPictureCount()).setImageURI(data.getData());
+				picturePathLists.add(picturePath);
+				Toast.makeText(ImagePicker.this, picturePath, 0).show();
+				break;
+			
 		}
 
 		case PICK_FROM_CAMERA: {
 			Bitmap photo = extras.getParcelable("data");
 			pictureLists.get(getPictureCount()).setImageBitmap(photo);
-			
+
 			break;
 		}
 		}// end of switch
 	}// end of method onActivityResult()
 
 	public void mOnClick(View v) {
-		//각각의 이미지뷰를 따로 추가, 삭제 해줘야 하므로 클릭시
-		//클릭했는 값을 받아옴
-		//public void onClick(DialogInterface dialog, int which) { --->which가 그건줄 알았는데 
-		//																					이상한값이 튀어나와서 따로처리함
-		if(v.getId() == R.id.imagepicker_ImageView1)
+		// 각각의 이미지뷰를 따로 추가, 삭제 해줘야 하므로 클릭시
+		// 클릭했는 값을 받아옴
+		// public void onClick(DialogInterface dialog, int which) { --->which가
+		// 그건줄 알았는데
+		// 이상한값이 튀어나와서 따로처리함
+		if (v.getId() == R.id.imagepicker_ImageView1)
 			setPictureCount(0);
-		if(v.getId() == R.id.imagepicker_ImageView2)
+		if (v.getId() == R.id.imagepicker_ImageView2)
 			setPictureCount(1);
-		if(v.getId() == R.id.imagepicker_ImageView3)
+		if (v.getId() == R.id.imagepicker_ImageView3)
 			setPictureCount(2);
-		if(v.getId() == R.id.imagepicker_ImageView4)
+		if (v.getId() == R.id.imagepicker_ImageView4)
 			setPictureCount(3);
-		if(v.getId() == R.id.imagepicker_ImageView5)
+		if (v.getId() == R.id.imagepicker_ImageView5)
 			setPictureCount(4);
-		if(v.getId() == R.id.imagepicker_ImageView6)
+		if (v.getId() == R.id.imagepicker_ImageView6)
 			setPictureCount(5);
-		
+
+		if (v.getId() == R.id.imagepicker_submit_btn) {
+			Intent intent = new Intent();
+
+			intent.putExtra("PicturesPath", picturePathLists);
+			this.setResult(RESULT_OK, intent);
+			finish();
+		}
 
 		DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
 			@Override
@@ -163,14 +174,14 @@ public class ImagePicker extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				pictureLists.get(getPictureCount()).setImageBitmap(null);
+				picturePathLists.remove(getPictureCount());
 			}
 		};
 
 		new AlertDialog.Builder(this).setTitle("업로드할 이미지 선택")
 				// .setPositiveButton("사진촬영", cameraListener)
 				.setNeutralButton("사진 가져오기", albumListener)
-				.setNegativeButton("삭제", deleteListener)
-				.show();
+				.setNegativeButton("삭제", deleteListener).show();
 	}// end of method mOnClick
 
 }
