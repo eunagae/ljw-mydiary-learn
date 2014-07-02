@@ -19,8 +19,7 @@
     <string name="write_diary_locationpicker_btn">지도</string>
     <string name="write_diary_urllink_btn">URL</string>
     
-    <string name="imagepicker_fromcamera_btn" >사진 촬영</string>
-    <string name="imagepicker_fromalbum_btn" >앨범 불러오기</string>
+    <string name="imagepicker_submit" >확인</string>
     
     
 
