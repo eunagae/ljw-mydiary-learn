@@ -118,7 +118,7 @@ public class ImagePicker extends Activity {
 
 		case PICK_FROM_CAMERA: {
 			Bitmap photo = extras.getParcelable("data");
-			pictureLists.get(0).setImageBitmap(photo);
+			pictureLists.get(getPictureCount()).setImageBitmap(photo);
 			
 			break;
 		}
@@ -126,6 +126,23 @@ public class ImagePicker extends Activity {
 	}// end of method onActivityResult()
 
 	public void mOnClick(View v) {
+		//각각의 이미지뷰를 따로 추가, 삭제 해줘야 하므로 클릭시
+		//클릭했는 값을 받아옴
+		//public void onClick(DialogInterface dialog, int which) { --->which가 그건줄 알았는데 
+		//																					이상한값이 튀어나와서 따로처리함
+		if(v.getId() == R.id.imagepicker_ImageView1)
+			setPictureCount(0);
+		if(v.getId() == R.id.imagepicker_ImageView2)
+			setPictureCount(1);
+		if(v.getId() == R.id.imagepicker_ImageView3)
+			setPictureCount(2);
+		if(v.getId() == R.id.imagepicker_ImageView4)
+			setPictureCount(3);
+		if(v.getId() == R.id.imagepicker_ImageView5)
+			setPictureCount(4);
+		if(v.getId() == R.id.imagepicker_ImageView6)
+			setPictureCount(5);
+		
 
 		DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
 			@Override
@@ -137,8 +154,7 @@ public class ImagePicker extends Activity {
 		DialogInterface.OnClickListener albumListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
-				setPictureCount(which);
+
 				doTakeAlbumAction();
 			}
 		};
@@ -146,8 +162,7 @@ public class ImagePicker extends Activity {
 		DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(ImagePicker.this, Integer.toString(which), 0).show();
-				pictureLists.get(which).setImageBitmap(null);
+				pictureLists.get(getPictureCount()).setImageBitmap(null);
 			}
 		};
 
