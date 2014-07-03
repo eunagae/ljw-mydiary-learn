@@ -2,24 +2,22 @@ package com.example.kr.hkit.mydiary.write;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.kr.hkit.mydiary.MainActivity;
 import com.example.kr.hkit.mydiary.R;
 
 public class ImagePicker extends Activity {
@@ -28,8 +26,8 @@ public class ImagePicker extends Activity {
 	private static final int CROP_FROM_CAMERA = 2;
 
 	private Uri mImageCaptureUri;
-	private LinkedList<ImageView> pictureLists = new LinkedList<ImageView>();
-	private LinkedList<String> picturePathLists = new LinkedList<String>();
+	private ArrayList<PictureInfo> picList = new ArrayList<PictureInfo>();
+	private ArrayList<String> picPathList = new ArrayList<String>();
 	private int pictureCount;
 
 	//
@@ -46,14 +44,52 @@ public class ImagePicker extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.imagepicker);
+		
+		for(int i =0; i<6; i++){
+			PictureInfo info = new PictureInfo(null,"");
+			picList.add(info);
+			picPathList.add(null);
+		}
+		
+		picList.get(0).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView1));
+		picList.get(1).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView2));
+		picList.get(2).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView3));
+		picList.get(3).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView4));
+		picList.get(4).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView5));
+		picList.get(5).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView6));
+		
+		Intent intent  = getIntent();
+		
+		
+		if(intent.getStringArrayListExtra("PicPathFromWD") != null){
+			picPathList = intent.getStringArrayListExtra("PicPathFromWD");
+			for(int i=0; i<picPathList.size(); i++){
+				
+				picList.get(i).setPicturePath(picPathList.get(i));
+				Log.d("imagepicker", picPathList.get(i)+" ");
+				
+				BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 8;
+				Bitmap myBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(picPathList.get(i)), null, options);
+            	picList.get(i).getPicture().setImageBitmap(myBitmap);
+            	
+            	
+            	
+            	BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 8;
+                Bitmap bt;
+                try {
+                	bt = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+        			i.setImageBitmap(bt);
+    	    } catch (Exception e) {
 
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView1));
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView2));
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView3));
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView4));
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView5));
-		pictureLists.add((ImageView) findViewById(R.id.imagepicker_ImageView6));
-
+    
+    
+            	
+            	
+            	
+			}  
+		}		
 	}
 
 	/**
@@ -71,17 +107,12 @@ public class ImagePicker extends Activity {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 		// 임시로 사용할 파일의 경로를 생성
-		String url = "tmp_" + String.valueOf(System.currentTimeMillis())
-				+ ".jpg";
-		mImageCaptureUri = Uri.fromFile(new File(Environment
-				.getExternalStorageDirectory(), url));
+		String url = "tmp_" + String.valueOf(System.currentTimeMillis())+ ".jpg";
+		mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), url));
 
-		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-				mImageCaptureUri);
+		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
 		intent.putExtra("path", mImageCaptureUri.getPath());
 
-		// 특정기기에서 사진을 저장못하는 문제가 있어 다음을 주석처리 합니다.
-		// intent.putExtra("return-data", true);
 		startActivityForResult(intent, PICK_FROM_CAMERA);
 	}
 
@@ -99,9 +130,10 @@ public class ImagePicker extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) {
+		
 			return;
 		}
-
+		
 		// 임시 이미지만든거랑 경로를 받아옴.
 		final Bundle extras = data.getExtras();
 
@@ -111,9 +143,10 @@ public class ImagePicker extends Activity {
 		 * if(f.exists()) { f.delete(); }
 		 */
 		case PICK_FROM_ALBUM: {
+			
 				String picturePath = data.getData().getPath();
-				pictureLists.get(getPictureCount()).setImageURI(data.getData());
-				picturePathLists.add(picturePath);
+				picList.get(getPictureCount()).getPicture().setImageURI(data.getData());
+				picList.get(getPictureCount()).setPicturePath(picturePath);
 				Toast.makeText(ImagePicker.this, picturePath, 0).show();
 				break;
 			
@@ -121,14 +154,17 @@ public class ImagePicker extends Activity {
 
 		case PICK_FROM_CAMERA: {
 			Bitmap photo = extras.getParcelable("data");
-			pictureLists.get(getPictureCount()).setImageBitmap(photo);
+			//pictureLists.get(getPictureCount()).setImageBitmap(photo);
 
 			break;
 		}
+
+		
 		}// end of switch
 	}// end of method onActivityResult()
 
 	public void mOnClick(View v) {
+		
 		// 각각의 이미지뷰를 따로 추가, 삭제 해줘야 하므로 클릭시
 		// 클릭했는 값을 받아옴
 		// public void onClick(DialogInterface dialog, int which) { --->which가
@@ -147,12 +183,21 @@ public class ImagePicker extends Activity {
 		if (v.getId() == R.id.imagepicker_ImageView6)
 			setPictureCount(5);
 
+		// 확인 버튼
 		if (v.getId() == R.id.imagepicker_submit_btn) {
 			Intent intent = new Intent();
-
-			intent.putExtra("PicturesPath", picturePathLists);
+			
+			for(int i =0; i<picList.size(); i++){
+				
+					picPathList.set(i, picList.get(i).getPicturePath());
+					
+			}
+			
+			intent.putStringArrayListExtra("PicturesPath", picPathList);
+			
 			this.setResult(RESULT_OK, intent);
 			finish();
+			return;
 		}
 
 		DialogInterface.OnClickListener cameraListener = new DialogInterface.OnClickListener() {
@@ -173,8 +218,8 @@ public class ImagePicker extends Activity {
 		DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				pictureLists.get(getPictureCount()).setImageBitmap(null);
-				picturePathLists.remove(getPictureCount());
+				picList.get(getPictureCount()).getPicture().setImageBitmap(null);
+				picList.get(getPictureCount()).setPicturePath("");
 			}
 		};
 

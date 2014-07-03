@@ -1,8 +1,8 @@
 package com.example.kr.hkit.mydiary.write;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 
 import com.example.kr.hkit.mydiary.R;
 
@@ -12,6 +12,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,7 +21,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class WriteDiary extends Activity {
-	private LinkedList<String> picturePathLists = new LinkedList<String>();
+	private ArrayList<String> picturePathLists = new ArrayList<String>();
 	private Button dayPickerBtn;
 	private Button datePickerBtn;
 	
@@ -28,6 +29,11 @@ public class WriteDiary extends Activity {
 	int mYear, mMonth, mDay, mHour, mMinute;
 
 	
+	
+	public ArrayList<String> getPicturePathLists() {
+		return picturePathLists;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -66,22 +72,33 @@ public class WriteDiary extends Activity {
 		case R.id.write_diary_imgpicker_btn:
 			intent = new Intent(WriteDiary.this, ImagePicker.class);
 			
-			startActivityForResult(intent, 0);
+			if(picturePathLists.size() != 0){
+				intent.putStringArrayListExtra("PicPathFromWD", picturePathLists);
+				Log.d("imagepicker", "putStringArrayListExtra");
+				startActivityForResult(intent, 0);
+			}else{
+				startActivityForResult(intent, 3);
+			}
 			break;
 			
+		case R.id.write_diary_urllink_btn:
+			
+			break;
 		}
 		
 	}
 	
 	// ImagePicker의 사진경로값 받아오기
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+		//super.onActivityResult(requestCode, resultCode, data);
 	     
 	    // 수행을 제대로 한 경우
 	    if(resultCode == RESULT_OK && data != null)
 	    {
-	        picturePathLists =(LinkedList<String>) getIntent().getSerializableExtra("PicturesPath");
-	         Toast.makeText(this, picturePathLists.get(1), 0).show();
+	    	
+	        picturePathLists = data.getStringArrayListExtra("PicturesPath");
+	      
+	        Toast.makeText(WriteDiary.this, picturePathLists.get(0), Toast.LENGTH_LONG).show();
 
 	    }
 	    // 수행을 제대로 하지 못한 경우
