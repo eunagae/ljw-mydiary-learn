@@ -7,12 +7,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,7 +25,6 @@ import com.example.kr.hkit.mydiary.R;
 public class ImagePicker extends Activity {
 	private static final int PICK_FROM_CAMERA = 0;
 	private static final int PICK_FROM_ALBUM = 1;
-	private static final int CROP_FROM_CAMERA = 2;
 
 	private Uri mImageCaptureUri;
 	private ArrayList<PictureInfo> picList = new ArrayList<PictureInfo>();
@@ -58,9 +59,8 @@ public class ImagePicker extends Activity {
 		picList.get(4).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView5));
 		picList.get(5).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView6));
 		
+		// 이미 등록된 사진이 있는경우 화면에 다시 띄워줌
 		Intent intent  = getIntent();
-		
-		
 		if(intent.getStringArrayListExtra("PicPathFromWD") != null){
 			picPathList = intent.getStringArrayListExtra("PicPathFromWD");
 			for(int i=0; i<picPathList.size(); i++){
@@ -70,27 +70,30 @@ public class ImagePicker extends Activity {
 				
 				BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 8;
-				Bitmap myBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(picPathList.get(i)), null, options);
-            	picList.get(i).getPicture().setImageBitmap(myBitmap);
+				
+                Uri uri = Uri.fromFile(new File(picList.get(i).getPicturePath()));
+            	Bitmap bmp = BitmapFactory.decodeFile(uri.getPath());
             	
-            	
-            	
-            	BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 8;
-                Bitmap bt;
-                try {
-                	bt = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
-        			i.setImageBitmap(bt);
-    	    } catch (Exception e) {
-
-    
-    
-            	
-            	
-            	
+            	picList.get(i).getPicture().setImageBitmap(bmp);
 			}  
 		}		
 	}
+	
+	public String getRealPathFromURI(Uri contentUri) {
+		 
+        String[] proj = { MediaStore.Images.Media.DATA };
+        
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        cursor.moveToNext();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+        Uri uri = Uri.fromFile(new File(path));
+        
+        Log.d("imagepicker", "getRealPathFromURI(), path : " + uri.toString());        
+        
+        cursor.close();
+        return path;
+    }
+
 
 	/**
 	 * 카메라에서 이미지 가져오기
@@ -123,7 +126,6 @@ public class ImagePicker extends Activity {
 		// 앨범 호출
 		Intent intent = new Intent(Intent.ACTION_PICK);
 		intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-		// intent.putExtra("path", mImageCaptureUri.getPath());
 		startActivityForResult(intent, PICK_FROM_ALBUM);
 	}
 
@@ -144,9 +146,20 @@ public class ImagePicker extends Activity {
 		 */
 		case PICK_FROM_ALBUM: {
 			
-				String picturePath = data.getData().getPath();
-				picList.get(getPictureCount()).getPicture().setImageURI(data.getData());
-				picList.get(getPictureCount()).setPicturePath(picturePath);
+			// Cursor -> String -> Uri 클래스로 값을 넘기면서 이미지 파일의 경로를 얻는다.
+		    // 그냥 intent.getString() 할 경우 SDCard내의 이미지 경로가 얻어지지 않는다.
+			// 절대 경로를 얻음.
+		      Cursor c = getContentResolver().query(data.getData(), null, null, null, null);
+		      c.moveToNext();
+		      String picturePath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
+		      Uri uri = Uri.fromFile(new File(picturePath));
+		      c.close();
+		      
+		      // 얻어낸 경로로 비트맵 생성
+		      Bitmap bmp = BitmapFactory.decodeFile(uri.getPath());
+			
+				picList.get(getPictureCount()).getPicture().setImageBitmap(bmp);	//imageView에 사진 띄움
+				picList.get(getPictureCount()).setPicturePath(picturePath);						//사진경로.
 				Toast.makeText(ImagePicker.this, picturePath, 0).show();
 				break;
 			
