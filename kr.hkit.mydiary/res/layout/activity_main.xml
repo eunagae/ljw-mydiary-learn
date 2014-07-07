@@ -4,7 +4,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.kr.hkit.mydiary.MainActivity" >
+    tools:context="kr.hkit.mydiary.MainActivity" >
 
     <!--
          As the main content view, the view below consumes the entire
@@ -18,7 +18,7 @@
 
         <fragment
             android:id="@+id/diary_list"
-            android:name="com.example.kr.hkit.mydiary.MainActivity$ListFragment"
+            android:name="kr.hkit.mydiary.MainActivity$ListFragment"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
 
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/navigation_drawer"
-        android:name="com.example.kr.hkit.mydiary.NavigationDrawerFragment"
+        android:name="kr.hkit.mydiary.NavigationDrawerFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left" />
