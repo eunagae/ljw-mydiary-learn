@@ -81,11 +81,18 @@ public class WriteDiary extends Activity {
 			}
 			break;
 			
+		//url 링크
 		case R.id.write_diary_urllink_btn:
 			
 			break;
 		
-			//지도 클릭시
+		//음악 클릭시
+		case R.id.write_diary_musicpicker_btn:
+			intent = new Intent(WriteDiary.this, MusicPicker.class);
+			startActivityForResult(intent, 0);
+			break;
+			
+		//지도 클릭시
 		case R.id.write_diary_locationpicker_btn:
 			intent = new Intent(WriteDiary.this, LocationPicker.class);
 			startActivity(intent);
