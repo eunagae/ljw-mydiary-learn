@@ -21,7 +21,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class WriteDiary extends Activity {
-	private ArrayList<String> picturePathLists = new ArrayList<String>();
+	public static final int FROM_IMAGEPIC =1;
+	public static final int FROM_MUSICPIC = 2;
+	
+	private ArrayList<String> picturePathLists = new ArrayList<String>();	//사진리스트
+	private String musicPath;
 	private Button dayPickerBtn;
 	private Button datePickerBtn;
 	
@@ -58,45 +62,46 @@ public class WriteDiary extends Activity {
 	public void mOnClick(View v){
 		Intent intent = null;
 		
-		switch(v.getId()){
-		case R.id.write_diary_daypicker_btn:
+		
+		if(v.getId() ==  R.id.write_diary_daypicker_btn){
 			new DatePickerDialog(WriteDiary.this, mDateSetListener, mYear, mMonth, mDay).show();
-			break;
-			
-		case R.id.write_diary_datepicker_btn:
+			return;
+		}
+		else if(v.getId() == R.id.write_diary_datepicker_btn){
 			new TimePickerDialog(WriteDiary.this, mTimeSetListener, mHour, mMinute, true).show();
-			break;
-			
+			return;
+		}
 			
 		//사진 불러오기. startActivityForResult()로 선택한 사진들의 경로를 되돌려받는다.
-		case R.id.write_diary_imgpicker_btn:
+		else if(v.getId() ==  R.id.write_diary_imgpicker_btn){
 			intent = new Intent(WriteDiary.this, ImagePicker.class);
 			
 			if(picturePathLists.size() != 0){
 				intent.putStringArrayListExtra("PicPathFromWD", picturePathLists);
-				Log.d("imagepicker", "putStringArrayListExtra");
+				
 				startActivityForResult(intent, 0);
 			}else{
 				startActivityForResult(intent, 3);
 			}
-			break;
-			
+			return;
+		}
 		//url 링크
-		case R.id.write_diary_urllink_btn:
+		else if(v.getId() ==  R.id.write_diary_urllink_btn){
 			
-			break;
-		
+			return;
+		}
 		//음악 클릭시
-		case R.id.write_diary_musicpicker_btn:
-			intent = new Intent(WriteDiary.this, MusicPicker.class);
+		else if(v.getId() ==  R.id.write_diary_musicpicker_btn){
+			intent = new Intent(WriteDiary.this, MusicPic.class);
 			startActivityForResult(intent, 0);
-			break;
-			
+			return;
+		}
 		//지도 클릭시
-		case R.id.write_diary_locationpicker_btn:
+		else if(v.getId() ==  R.id.write_diary_locationpicker_btn){
 			intent = new Intent(WriteDiary.this, LocationPicker.class);
 			startActivity(intent);
-			break;
+			return;
+		
 		}
 		
 	}
@@ -104,20 +109,22 @@ public class WriteDiary extends Activity {
 	// ImagePicker의 사진경로값 받아오기
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		//super.onActivityResult(requestCode, resultCode, data);
-	     
+		
 	    // 수행을 제대로 한 경우
-	    if(resultCode == RESULT_OK && data != null)
-	    {
-	    	
+		// 1. 사진
+	    if(resultCode == FROM_IMAGEPIC && data != null){	    	
 	        picturePathLists = data.getStringArrayListExtra("PicturesPath");
-	      
-	        Toast.makeText(WriteDiary.this, picturePathLists.get(0), Toast.LENGTH_LONG).show();
-
+	        
+	    }
+	    // 2. 음악
+	    else if(resultCode == FROM_MUSICPIC && data != null){
+	    	musicPath = data.getStringExtra("musicPath");
+	    	Log.d("music", musicPath);
+	    	Toast.makeText(this, musicPath, 0).show();
 	    }
 	    // 수행을 제대로 하지 못한 경우
-	    else if(resultCode == RESULT_CANCELED)
-	    {
-	         Toast.makeText(this, "사진 가져오기 취소", 0).show();
+	    else if(resultCode == RESULT_CANCELED){
+	         Toast.makeText(this, "취소", 0).show();
 	    }
 	
 	};
