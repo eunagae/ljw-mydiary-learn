@@ -8,12 +8,14 @@
         android:id="@+id/musicpicker_imgview"
         android:layout_width="1dp"
         android:layout_height="fill_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1.5"
+        android:paddingLeft="5dp"
+        android:paddingRight="10dp" />
 
     <LinearLayout
         android:layout_width="1dp"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:orientation="vertical" >
 
         <TextView
@@ -21,14 +23,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/musicpicker_singer_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+           android:textSize="10dp" />
 
     </LinearLayout>
 

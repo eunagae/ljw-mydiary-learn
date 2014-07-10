@@ -208,7 +208,7 @@ public class ImagePicker extends Activity {
 			
 			intent.putStringArrayListExtra("PicturesPath", picPathList);
 			
-			this.setResult(RESULT_OK, intent);
+			this.setResult(PICK_FROM_ALBUM, intent);
 			finish();
 			return;
 		}

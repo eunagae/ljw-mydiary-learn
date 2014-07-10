@@ -20,7 +20,11 @@
     <string name="write_diary_urllink_btn">URL</string>
     
     <string name="imagepicker_submit" >확인</string>
-    
+     <string name="hello">Hello World, GoogleMapkiexampleActivity!</string>
+
+	<string name="longTouchPlease">길게 터치한 후 기다려 주세요.</string>
+	<string name="map_not_ready">Map is not ready yet</string>
+	<string name="searchName">검색명</string>
     
 
 </resources>
