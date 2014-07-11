@@ -46,7 +46,8 @@
         android:value="AIzaSyBpmO_UYePeG7M_asr-2Uk-ReOmSEJdFFw" />
         <activity android:name="kr.hkit.mydiary.write.MusicPicker"></activity>
         <activity android:name="kr.hkit.mydiary.write.MusicPic"></activity>
-        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="kr.hkit.mydiary.write.LocationPicker"></activity>        
+        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="kr.hkit.mydiary.write.LocationPicker"></activity>
+        <activity android:name="kr.hkit.mydiary.write.URL"></activity>        
     </application>
     
     <uses-feature
