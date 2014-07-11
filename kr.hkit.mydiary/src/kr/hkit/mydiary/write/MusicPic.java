@@ -27,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kr.hkit.mydiary.R;
 
@@ -42,7 +43,7 @@ public class MusicPic extends Activity {
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.musicpicker);
-	        
+	        Toast.makeText(this, "FUCKINGKing", 0).show();
 	        /* Layout으로 부터 ListView에 대한 객체를 얻는다. */
 	        mListView = (ListView)findViewById(R.id.musicpicker_list);
 	        
@@ -189,8 +190,9 @@ public class MusicPic extends Activity {
 	                    mSingerList.add(singer);
 	                }while (musicCursor.moveToNext());
 	            }
+	            
 	            Log.d("dd", "whuhwuhwuwhwh");
-	            Collections.reverse(mMusiceTitleList);
+
 	            
 	            return;
 	        }

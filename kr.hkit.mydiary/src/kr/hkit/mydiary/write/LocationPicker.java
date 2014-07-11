@@ -1,6 +1,5 @@
 package kr.hkit.mydiary.write;
 
-
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -16,7 +15,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.maps.MapController;
+
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.location.Address;
@@ -37,14 +39,13 @@ import android.widget.Toast;
 
 public class LocationPicker extends FragmentActivity {
 
-	
 	public static LatLng DEFAULT_GP = new LatLng(37.566500, 126.978000);// 서울
 
 	// Minimum & maximum latitude so we can span it
 	// The latitude is clamped between -80 degrees and +80 degrees inclusive
 	// thus we ensure that we go beyond that number
-	private double minLatitude =  +81;
-	private double maxLatitude =  -81;
+	private double minLatitude = +81;
+	private double maxLatitude = -81;
 
 	// Minimum & maximum longitude so we can span it
 	// The longitude is clamped between -180 degrees and +180 degrees inclusive
@@ -63,11 +64,15 @@ public class LocationPicker extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.locationpicker);
-		
-		Log.d("dd", "why doesn't working!!!");
+
 		
 		setUpMapIfNeeded();
+		Log.d("dd", "why doesn't working!!!");
 		
+		//서울로 설정.
+		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(DEFAULT_GP , 16);
+		mMap.animateCamera(cu);
+
 		// 검색 버튼 숨김
 		searchBt = (ImageButton) findViewById(R.id.locationpicker_searchBt);
 		searchBt.setVisibility(View.VISIBLE);
@@ -75,87 +80,99 @@ public class LocationPicker extends FragmentActivity {
 
 		// httpUtil
 		httpUtil = new GoogleMapkiUtil();
-		
+
 		errorDialog = new AlertDialog.Builder(this).setTitle("오류")
-				.setMessage(errorString).setPositiveButton("확인", null)
-				.create();
-		
+				.setMessage(errorString).setPositiveButton("확인", null).create();
+
 	}
-	//맵 있는지없는지 확인
+
+	// 맵 있는지없는지 확인
 	private void setUpMapIfNeeded() {
-        if (mMap == null) {
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.locationpicker_map)).getMap();
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
-    }
-	//로딩
+		MapController mControl;
+		if (mMap == null) {
+			mMap = ((SupportMapFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.locationpicker_map)).getMap();
+			
+			if (mMap != null) {
+				setUpMap();
+			}
+		}
+	}
+
+	// 로딩
 	private void setUpMap() {
 		Log.d("dd", "setUpMap");
 		mMap.setMapType(MAP_TYPE_NORMAL);
-		mMap.setMyLocationEnabled(true);
 		
+		mMap.setMyLocationEnabled(true);
 	}
-	
+
 	// 검색 아이콘 누르면 검색창 나타남.. 내위치 표시해주면서.
 	private View.OnClickListener onNameSearch = new View.OnClickListener() {
 
 		@Override
 		public void onClick(View arg0) {
-			
-			final LinearLayout linear = (LinearLayout) View.inflate(LocationPicker.this, R.layout.locationpicker_search, null);
-			TextView addrTv = (TextView) linear.findViewById(R.id.dialog_map_search_addr);
+
+			final LinearLayout linear = (LinearLayout) View.inflate(
+					LocationPicker.this, R.layout.locationpicker_search, null);
+			TextView addrTv = (TextView) linear
+					.findViewById(R.id.dialog_map_search_addr);
 			Location lo = mMap.getMyLocation();
 			addrTv.setText(getAddres(lo.getLatitude(), lo.getLongitude()));
-			
+
 			new AlertDialog.Builder(LocationPicker.this).setTitle("명칭을 입력하세요")
 					.setView(linear).setPositiveButton("검색", onClickNameSearch)
 					.setNegativeButton("취소", null).show();
-			
+
 		}
 	};
-	
+
 	// 검색. GoogleMapkiUtil.java에 메서드 검색기능 구현.
 	private DialogInterface.OnClickListener onClickNameSearch = new DialogInterface.OnClickListener() {
-		
+
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			AlertDialog ad = (AlertDialog) dialog;
-			EditText nameEt = (EditText) ad.findViewById(R.id.dialog_map_search_et);
-			TextView addrTv = (TextView) ad.findViewById(R.id.dialog_map_search_addr);
-			
+			EditText nameEt = (EditText) ad
+					.findViewById(R.id.dialog_map_search_et);
+			TextView addrTv = (TextView) ad
+					.findViewById(R.id.dialog_map_search_addr);
+
 			if (nameEt.getText().length() > 0) {
 				if (progressDialog != null && progressDialog.isShowing())
 					return;
-				progressDialog = ProgressDialog.show(
-						LocationPicker.this, "Wait", "검색 중입니다");
-	
-				httpUtil.requestMapSearch(new ResultHandler(LocationPicker.this), nameEt.getText().toString(), addrTv.getText().toString());
-	
+				progressDialog = ProgressDialog
+						.show(LocationPicker.this,
+						"Wait", "검색 중입니다");
+
+				httpUtil.requestMapSearch(
+						new ResultHandler(LocationPicker.this), nameEt
+								.getText().toString(), addrTv.getText()
+								.toString());
+
 				final InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(nameEt.getWindowToken(), 0);
 			}
 		}
 	};
-	
-	//핸들러 메시지.
+
+	// 핸들러 메시지.
 	static class ResultHandler extends Handler {
 		private final WeakReference<LocationPicker> mActivity;
-		
+
 		ResultHandler(LocationPicker activity) {
 			mActivity = new WeakReference<LocationPicker>(activity);
 		}
-		
+
 		@Override
 		public void handleMessage(Message msg) {
 			LocationPicker activity = mActivity.get();
-			if(activity != null) {
+			if (activity != null) {
 				activity.handleMessage(msg);
 			}
 		}
 	}
-	
+
 	private void handleMessage(Message msg) {
 		progressDialog.dismiss();
 
@@ -181,13 +198,24 @@ public class LocationPicker extends FragmentActivity {
 			errorDialog.show();
 			return;
 		}
-		
-		Toast.makeText(this, "Success !!!", Toast.LENGTH_SHORT).show();
 
-		String[] searches = searchList.toArray(new String[searchList.size()]);
+		Toast.makeText(this, "Success !!!", Toast.LENGTH_SHORT).show();
+		final String[] searches = searchList.toArray(new String[searchList.size()]);
+		final String pickedAddr = null;
+		new AlertDialog.Builder(this)
+		.setItems(searches, 
+			new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//pickedAddr = searches[which].toString();
+			}
+		})
+		.setNegativeButton("취소", null)
+		.show();
+		
+		Toast.makeText(this, pickedAddr, 0).show();
+		
 		adjustToPoints(searches);
 	}
-	
 
 	/**
 	 * 주어진 위치들에 적합한 줌, 이동시킴
@@ -195,25 +223,24 @@ public class LocationPicker extends FragmentActivity {
 	 * @param mPoints
 	 */
 	protected void adjustToPoints(String[] results) {
-		
+
 		mMap.clear();
-		
+
 		int length = Integer.valueOf(results.length / 3);
 		LatLng[] mPoints = new LatLng[length];
-		
+
 		for (int i = 0; i < length; i++) {
-			LatLng latlng = new LatLng(
-            		Float.valueOf(results[i * 3 + 1]),
-            		Float.valueOf(results[i * 3 + 2]));
-            mMap.addMarker(new MarkerOptions()
-                    .position(latlng)
-                    .title(results[i * 3])
-                    .icon(BitmapDescriptorFactory.defaultMarker(i * 360 / length)));
-            
-            mPoints[i] = latlng;
-        }
-		
-		
+			LatLng latlng = new LatLng(Float.valueOf(results[i * 3 + 1]),
+					Float.valueOf(results[i * 3 + 2]));
+			mMap.addMarker(new MarkerOptions()
+					.position(latlng)
+					.title(results[i * 3])
+					.icon(BitmapDescriptorFactory.defaultMarker(i * 360
+							/ length)));
+
+			mPoints[i] = latlng;
+		}
+
 		for (LatLng ll : mPoints) {
 
 			// Sometimes the longitude or latitude gathering
@@ -221,27 +248,34 @@ public class LocationPicker extends FragmentActivity {
 			// doubt anybody would be at 0 0
 			if (ll.latitude != 0 && ll.longitude != 0) {
 				// Sets the minimum and maximum latitude so we can span and zoom
-				minLatitude = (minLatitude > ll.latitude) ? ll.latitude : minLatitude;
-				maxLatitude = (maxLatitude < ll.latitude) ? ll.latitude : maxLatitude;
+				minLatitude = (minLatitude > ll.latitude) ? ll.latitude
+						: minLatitude;
+				maxLatitude = (maxLatitude < ll.latitude) ? ll.latitude
+						: maxLatitude;
 				// Sets the minimum and maximum latitude so we can span and zoom
-				minLongitude = (minLongitude > ll.longitude) ? ll.longitude	: minLongitude;
-				maxLongitude = (maxLongitude < ll.longitude) ? ll.longitude	: maxLongitude;
+				minLongitude = (minLongitude > ll.longitude) ? ll.longitude
+						: minLongitude;
+				maxLongitude = (maxLongitude < ll.longitude) ? ll.longitude
+						: maxLongitude;
 			}
 		}
-		
-		Log.d("dd", minLatitude + "/" +maxLatitude + "/"+minLongitude + "/"+maxLongitude);
-		
-		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(new LatLng(minLatitude, minLongitude), new LatLng(maxLatitude, maxLongitude)), 4);
+
+		Log.d("dd", minLatitude + "/" + maxLatitude + "/" + minLongitude + "/"
+				+ maxLongitude);
+
+		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
+				new LatLng(minLatitude, minLongitude), new LatLng(maxLatitude,
+						maxLongitude)), 6);
 		mMap.animateCamera(cu);
-		
+
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-        setUpMapIfNeeded();
+		setUpMapIfNeeded();
 	}
-	
+
 	private String getAddres(double lat, double lng) {
 		Geocoder gcK = new Geocoder(getApplicationContext(), Locale.KOREA);
 		String res = "정보없음";
@@ -265,5 +299,3 @@ public class LocationPicker extends FragmentActivity {
 		return res;
 	}
 }
-
-

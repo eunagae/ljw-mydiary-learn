@@ -87,7 +87,8 @@ public class WriteDiary extends Activity {
 		}
 		//url 링크
 		else if(v.getId() ==  R.id.write_diary_urllink_btn){
-			
+			intent = new Intent(WriteDiary.this, URL.class);
+			startActivity(intent);
 			return;
 		}
 		//음악 클릭시
