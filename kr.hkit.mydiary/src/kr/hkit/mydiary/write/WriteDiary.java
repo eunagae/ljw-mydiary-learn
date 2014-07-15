@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,6 +47,8 @@ public class WriteDiary extends Activity {
 	private Button datePickerBtn;
 	private EditText title;
 	private EditText content;
+	
+	Button checkdb;
 	
 	String[] picPath = new String[6];
 	
@@ -69,6 +73,8 @@ public class WriteDiary extends Activity {
 		helper = new DiaryDbHelper(this);
 		dao = DiaryDAO.open(this);
 		
+		checkdb = (Button) findViewById(R.id.check_db);
+		
 		dayPickerBtn = (Button) findViewById(R.id.write_diary_daypicker_btn);
 		datePickerBtn = (Button) findViewById(R.id.write_diary_datepicker_btn);
 		title = (EditText) findViewById(R.id.write_diary_title_edit);
@@ -80,7 +86,7 @@ public class WriteDiary extends Activity {
 		mDay = cal.get(Calendar.DAY_OF_MONTH);
 		mHour = cal.get(Calendar.HOUR_OF_DAY);
 		mMinute = cal.get(Calendar.MINUTE);
-		
+	
 		addr = new AddInfo(null, null, null);
 		UpdateNow();
 	}
@@ -153,8 +159,6 @@ public class WriteDiary extends Activity {
 				Toast.makeText(this, "내용이 없습니다.", 0).show();
 				return;
 			}else{
-				
-				
 				result = dao.insert(title.getText().toString(), 
 										mYear, mMonth, mDay, mHour, mMinute, 
 										content.getText().toString(), 
@@ -257,6 +261,13 @@ public class WriteDiary extends Activity {
 		dayPickerBtn.setText(String.format("%d/%d/%d", mYear, mMonth+1, mDay ));
 		datePickerBtn.setText(String.format("%d : %d", mHour, mMinute));
 		
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		dao.close();
 	}
 	
 }

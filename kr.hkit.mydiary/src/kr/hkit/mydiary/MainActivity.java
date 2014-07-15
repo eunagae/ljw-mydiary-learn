@@ -1,27 +1,29 @@
 package kr.hkit.mydiary;
 
+import java.util.ArrayList;
+
+import kr.hkit.mydiary.sqllite.DiaryDAO;
+import kr.hkit.mydiary.sqllite.DiaryDbHelper;
+import kr.hkit.mydiary.sqllite.SelectForList;
 import kr.hkit.mydiary.write.WriteDiary;
-
-import com.example.kr.hkit.mydiary.R;
-
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.view.ContextMenu;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.support.v4.widget.DrawerLayout;
-import android.webkit.WebView.FindListener;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+
+import com.example.kr.hkit.mydiary.R;
+
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -37,6 +39,11 @@ public class MainActivity extends Activity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	
+	ListView list;
+	DiaryDAO dao;
+	SimpleCursorAdapter adapter;
+	ArrayList<SelectForList> listinfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,13 @@ public class MainActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		
+		dao = DiaryDAO.open(this);
+		list = (ListView) findViewById(R.id.main_diary_listview);
+		listinfo = new ArrayList<SelectForList>();
+		listinfo = dao.selectForList();
+		list.setAdapter(adapter);
+		
 	}
 
 	@Override
@@ -151,26 +165,4 @@ public class MainActivity extends Activity implements
 					ARG_SECTION_NUMBER));
 		}
 	}
-
-	public static class ListFragment extends Fragment {
-		TextView diaryTitleInList;
-		TextView diaryContentInList;
-		ImageView diaryImgInList;
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View root = inflater.inflate(R.layout.list_fragment, container,
-					false);
-			diaryTitleInList = (TextView) root
-					.findViewById(R.id.diary_title_inlist);
-			diaryContentInList = (TextView) root
-					.findViewById(R.id.diary_content_inlist);
-			diaryImgInList = (ImageView) root
-					.findViewById(R.id.diary_image_inlist);
-
-			return root;
-		}
-	}
-
 }

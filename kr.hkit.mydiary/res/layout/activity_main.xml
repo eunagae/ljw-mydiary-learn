@@ -16,11 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <fragment
-            android:id="@+id/diary_list"
-            android:name="kr.hkit.mydiary.MainActivity$ListFragment"
+        <ListView
+            android:id="@+id/main_diary_listview"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="wrap_content" >
+        </ListView>
 
     </FrameLayout>
 

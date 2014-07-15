@@ -47,6 +47,13 @@
             android:layout_height="wrap_content"
             android:onClick="mOnClick"
             android:text="@string/write_diary_datepicker_btn" />
+
+        <Button
+            android:id="@+id/check_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
     </LinearLayout>
 
     <EditText

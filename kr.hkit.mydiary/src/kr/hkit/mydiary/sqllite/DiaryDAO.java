@@ -1,5 +1,7 @@
 package kr.hkit.mydiary.sqllite;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -89,11 +91,21 @@ public class DiaryDAO {
 		return true;
 	}
 	
-	public Cursor selectAll(){
-		String sql = "Select * from dic;";
+	public ArrayList<SelectForList> selectForList(){
+		String sql = "Select title, content, picpath1 from diary;";
 		Cursor cursor = db.rawQuery(sql, null);
-		if (cursor !=null) cursor.moveToFirst();
-		return cursor;
+		ArrayList<SelectForList> listinfo = new ArrayList<SelectForList>();
+		
+		while(cursor.moveToNext()){
+			String title = cursor.getString(0);
+			String subtitle = cursor.getString(1).substring(0, 20);
+			String picpath = cursor.getString(2);
+			
+			listinfo.add(new SelectForList(title, subtitle, picpath));
+		}
+		cursor.close();
+		return listinfo;
+		
 	}
 	
 	public boolean update(int id, String eng, String han){
@@ -106,6 +118,7 @@ public class DiaryDAO {
 		}
 		return true;
 	}
+	
 }
 
 
