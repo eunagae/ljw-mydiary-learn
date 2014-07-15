@@ -23,6 +23,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.R.string;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -95,7 +96,7 @@ public class GoogleMapkiUtil {
 		qparams.add(new BasicNameValuePair("output", "json"));// 결과포멧 - json
 		qparams.add(new BasicNameValuePair("mrt", "yp"));
 		qparams.add(new BasicNameValuePair("hl", "ko")); // 언어
-		qparams.add(new BasicNameValuePair("radius", "18.641")); // 검색반경 30km,
+		qparams.add(new BasicNameValuePair("radius", "180.641")); // 검색반경 300km,
 																	// miles =
 																	// kilometers
 																	// / 1.60934
@@ -205,6 +206,7 @@ public class GoogleMapkiUtil {
 						lon = markers.getJSONObject(i).getJSONObject("latlng")
 								.getString("lng");
 						// 주소, 위도, 경도 순으로 저장함.
+						
 						searchList.add(address);
 						searchList.add(lat);
 						searchList.add(lon);

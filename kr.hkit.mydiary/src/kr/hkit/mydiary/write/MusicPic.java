@@ -190,10 +190,7 @@ public class MusicPic extends Activity {
 	                    mSingerList.add(singer);
 	                }while (musicCursor.moveToNext());
 	            }
-	            
-	            Log.d("dd", "whuhwuhwuwhwh");
 
-	            
 	            return;
 	        }
 	    } 
