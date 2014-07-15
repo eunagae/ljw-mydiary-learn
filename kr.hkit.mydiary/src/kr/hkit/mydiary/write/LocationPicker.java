@@ -11,9 +11,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.maps.MapController;
 
@@ -21,6 +23,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,20 +41,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LocationPicker extends FragmentActivity {
-
+	public static final int FROM_LOCATIONPIC = 3;
 	public static LatLng DEFAULT_GP = new LatLng(37.566500, 126.978000);// 서울
-
-	// Minimum & maximum latitude so we can span it
-	// The latitude is clamped between -80 degrees and +80 degrees inclusive
-	// thus we ensure that we go beyond that number
-	private double minLatitude = +81;
-	private double maxLatitude = -81;
-
-	// Minimum & maximum longitude so we can span it
-	// The longitude is clamped between -180 degrees and +180 degrees inclusive
-	// thus we ensure that we go beyond that number
-	private double minLongitude = +181;
-	private double maxLongitude = -181;
 
 	protected GoogleMap mMap;
 	private ProgressDialog progressDialog;
@@ -59,18 +50,18 @@ public class LocationPicker extends FragmentActivity {
 	private ImageButton searchBt;
 	private GoogleMapkiUtil httpUtil;
 	private AlertDialog errorDialog;
+	AddInfo addinfo = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.locationpicker);
 
-		
 		setUpMapIfNeeded();
 		Log.d("dd", "why doesn't working!!!");
-		
-		//서울로 설정.
-		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(DEFAULT_GP , 16);
+
+		// 서울로 설정.
+		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(DEFAULT_GP, 16);
 		mMap.animateCamera(cu);
 
 		// 검색 버튼 숨김
@@ -85,14 +76,14 @@ public class LocationPicker extends FragmentActivity {
 				.setMessage(errorString).setPositiveButton("확인", null).create();
 
 	}
-
+	
 	// 맵 있는지없는지 확인
 	private void setUpMapIfNeeded() {
 		MapController mControl;
 		if (mMap == null) {
 			mMap = ((SupportMapFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.locationpicker_map)).getMap();
-			
+
 			if (mMap != null) {
 				setUpMap();
 			}
@@ -103,9 +94,11 @@ public class LocationPicker extends FragmentActivity {
 	private void setUpMap() {
 		Log.d("dd", "setUpMap");
 		mMap.setMapType(MAP_TYPE_NORMAL);
-		
+
 		mMap.setMyLocationEnabled(true);
 	}
+	
+	
 
 	// 검색 아이콘 누르면 검색창 나타남.. 내위치 표시해주면서.
 	private View.OnClickListener onNameSearch = new View.OnClickListener() {
@@ -141,8 +134,7 @@ public class LocationPicker extends FragmentActivity {
 			if (nameEt.getText().length() > 0) {
 				if (progressDialog != null && progressDialog.isShowing())
 					return;
-				progressDialog = ProgressDialog
-						.show(LocationPicker.this,
+				progressDialog = ProgressDialog.show(LocationPicker.this,
 						"Wait", "검색 중입니다");
 
 				httpUtil.requestMapSearch(
@@ -199,22 +191,43 @@ public class LocationPicker extends FragmentActivity {
 			return;
 		}
 
-		Toast.makeText(this, "Success !!!", Toast.LENGTH_SHORT).show();
-		final String[] searches = searchList.toArray(new String[searchList.size()]);
-		final String pickedAddr = null;
+		final String[] searches = searchList.toArray(new String[searchList
+				.size()]);
+		String[] addName = new String[searches.length / 3];
+
+		//msg는 좌표 까지 받아오는데 주소만 출력 해주어야 하므로 이름만 따로 저장,
+		for (int i = 0, j = 0; j < searches.length; i++, j = j + 3) {
+			addName[i] = searches[j];
+		}
+		
 		new AlertDialog.Builder(this)
-		.setItems(searches, 
-			new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				//pickedAddr = searches[which].toString();
-			}
-		})
-		.setNegativeButton("취소", null)
-		.show();
-		
-		Toast.makeText(this, pickedAddr, 0).show();
-		
-		adjustToPoints(searches);
+				.setItems(addName, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						//5개까지 뜨도록 설정. 
+						switch (which){
+						case 0:
+							addinfo = new AddInfo(searches[which], searches[(which + 1)], searches[(which + 2)]);
+							adjustToPoints(addinfo);
+							break;
+						case 1:
+							addinfo = new AddInfo(searches[3], searches[4], searches[5]);
+							adjustToPoints(addinfo);
+							break;
+						case 2:
+							addinfo = new AddInfo(searches[6], searches[7], searches[8]);
+							adjustToPoints(addinfo);
+							break;
+						case 3:
+							addinfo = new AddInfo(searches[9], searches[10], searches[11]);
+							adjustToPoints(addinfo);
+							break;
+						case 4:
+							addinfo = new AddInfo(searches[12], searches[13], searches[14]);
+							adjustToPoints(addinfo);
+							break;
+						}
+					}
+				}).setNegativeButton("취소", null).show();
 	}
 
 	/**
@@ -222,52 +235,37 @@ public class LocationPicker extends FragmentActivity {
 	 * 
 	 * @param mPoints
 	 */
-	protected void adjustToPoints(String[] results) {
+	protected void adjustToPoints(final AddInfo addinfo) {
 
 		mMap.clear();
 
-		int length = Integer.valueOf(results.length / 3);
-		LatLng[] mPoints = new LatLng[length];
+		LatLng latlng = new LatLng(Double.parseDouble(addinfo.getLatitude()),
+				Double.parseDouble(addinfo.getLongtude()));
 
-		for (int i = 0; i < length; i++) {
-			LatLng latlng = new LatLng(Float.valueOf(results[i * 3 + 1]),
-					Float.valueOf(results[i * 3 + 2]));
-			mMap.addMarker(new MarkerOptions()
-					.position(latlng)
-					.title(results[i * 3])
-					.icon(BitmapDescriptorFactory.defaultMarker(i * 360
-							/ length)));
+		mMap.addMarker(new MarkerOptions()
+				.position(latlng)
+				.title(addinfo.getAddress())
+				.icon(BitmapDescriptorFactory.defaultMarker())
+				).showInfoWindow();
 
-			mPoints[i] = latlng;
-		}
-
-		for (LatLng ll : mPoints) {
-
-			// Sometimes the longitude or latitude gathering
-			// did not work so skipping the point
-			// doubt anybody would be at 0 0
-			if (ll.latitude != 0 && ll.longitude != 0) {
-				// Sets the minimum and maximum latitude so we can span and zoom
-				minLatitude = (minLatitude > ll.latitude) ? ll.latitude
-						: minLatitude;
-				maxLatitude = (maxLatitude < ll.latitude) ? ll.latitude
-						: maxLatitude;
-				// Sets the minimum and maximum latitude so we can span and zoom
-				minLongitude = (minLongitude > ll.longitude) ? ll.longitude
-						: minLongitude;
-				maxLongitude = (maxLongitude < ll.longitude) ? ll.longitude
-						: maxLongitude;
-			}
-		}
-
-		Log.d("dd", minLatitude + "/" + maxLatitude + "/" + minLongitude + "/"
-				+ maxLongitude);
-
-		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
-				new LatLng(minLatitude, minLongitude), new LatLng(maxLatitude,
-						maxLongitude)), 6);
+		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, 16);
 		mMap.animateCamera(cu);
-
+		
+		mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+			Intent intent = new Intent();
+			@Override
+			public boolean onMarkerClick(Marker arg0) {
+				String[] addr = new String[3];
+				addr[0] = addinfo.getAddress();
+				addr[1] = addinfo.getLatitude();
+				addr[2] = addinfo.getLongtude();
+				intent.putExtra("addr", addr);
+				setResult(FROM_LOCATIONPIC, intent);
+				finish();
+				return true;
+			}
+		});
+		
 	}
 
 	@Override
