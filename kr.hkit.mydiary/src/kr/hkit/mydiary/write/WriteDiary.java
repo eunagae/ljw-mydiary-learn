@@ -36,19 +36,18 @@ public class WriteDiary extends Activity {
 	public static final int FROM_MUSICPIC = 2;
 	public static final int FROM_LOCATIONPIC = 3;
 	
-	private DiaryDbHelper helper;
+	
 	private DiaryDAO dao;
 	
 	private ArrayList<String> picturePathLists = new ArrayList<String>();	//사진리스트.
-	private String musicPath;				// mp3 파일 경로.
+	private String musicPath, mp3Title, mp3Singer;				// mp3 파일 경로.
+	private int mp3AlbumArtID;
 	private AddInfo addr;					// 주소, 경도, 위도.
 	private String url;						// url.
 	private Button dayPickerBtn;
 	private Button datePickerBtn;
 	private EditText title;
 	private EditText content;
-	
-	Button checkdb;
 	
 	String[] picPath = new String[6];
 	
@@ -69,11 +68,6 @@ public class WriteDiary extends Activity {
 		ActionBar ab = getActionBar();
 		ab.hide();
 		setContentView(R.layout.write_diary);
-		
-		helper = new DiaryDbHelper(this);
-		dao = DiaryDAO.open(this);
-		
-		checkdb = (Button) findViewById(R.id.check_db);
 		
 		dayPickerBtn = (Button) findViewById(R.id.write_diary_daypicker_btn);
 		datePickerBtn = (Button) findViewById(R.id.write_diary_datepicker_btn);
@@ -153,7 +147,8 @@ public class WriteDiary extends Activity {
 		//글 등록
 		else if(v.getId() == R.id.write_diary_writesubmit_btn){
 			boolean result;
-			String str;
+		
+			dao = DiaryDAO.open(this);
 			
 			if(validCheck() == false){
 				Toast.makeText(this, "내용이 없습니다.", 0).show();
@@ -168,12 +163,13 @@ public class WriteDiary extends Activity {
 										picPath[3],
 										picPath[4],
 										picPath[5],
-										musicPath, 
+										musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
 										addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
 										url
 										);
 				
-				str = result?"Insert Success" : "Insert Fail";
+				dao.close();
+				finish();
 				return;
 			}
 		}
@@ -217,10 +213,13 @@ public class WriteDiary extends Activity {
 	        picturePathLists = data.getStringArrayListExtra("PicturesPath");
 	        
 	    }
+	
 	    // 2. 음악
 	    else if(resultCode == FROM_MUSICPIC && data != null){
 	    	musicPath = data.getStringExtra("musicPath");
-	    	
+	    	mp3Singer = data.getStringExtra("mp3Singer");
+	    	mp3Title = data.getStringExtra("mp3Title");
+	    	mp3AlbumArtID = data.getIntExtra("mp3AlbumArtID", 0);
 	    	
 	    }
 	    // 3. 지도
@@ -263,11 +262,6 @@ public class WriteDiary extends Activity {
 		
 	}
 	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		dao.close();
-	}
+
 	
 }
