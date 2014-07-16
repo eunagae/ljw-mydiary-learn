@@ -32,6 +32,10 @@ import android.widget.Toast;
 import com.example.kr.hkit.mydiary.R;
 
 public class MusicPic extends Activity {
+	private ArrayList<String> mMusicIDList;
+    private ArrayList<String> mAlbumartIDList;
+    private ArrayList<String> mMusiceTitleList;
+    private ArrayList<String> mSingerList;
 	
 		public static final int FROM_MUSICPIC = 2;
 
@@ -60,7 +64,11 @@ public class MusicPic extends Activity {
 	                Uri musicURI = Uri.withAppendedPath(
 	                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, "" + mMusicAdapter.getMusicID(position)); 
 	                String musicPath = getRealPathFromURI(musicURI);
+	               
 	                intent.putExtra("musicPath", musicPath);
+	                intent.putExtra("mp3Title", mMusiceTitleList.get(position));
+	                intent.putExtra("mp3Singer", mSingerList.get(position));
+	                intent.putExtra("mp3AlbumArtID", mAlbumartIDList.get(position));
 	             
 	                setResult(FROM_MUSICPIC, intent);
 	                finish();
@@ -85,10 +93,7 @@ public class MusicPic extends Activity {
 	     *              Adapter class 
 	     * ==========================================*/
 	    public class MusicAdapter extends BaseAdapter {
-	        private ArrayList<String> mMusicIDList;
-	        private ArrayList<String> mAlbumartIDList;
-	        private ArrayList<String> mMusiceTitleList;
-	        private ArrayList<String> mSingerList;
+	        
 	        private Context mContext;
 	       
 	        
@@ -203,7 +208,7 @@ public class MusicPic extends Activity {
 	    // Get album art for specified album. This method will not try to
 	    // fall back to getting artwork directly from the file, nor will
 	    // it attempt to repair the database.
-	    private static Bitmap getArtworkQuick(Context context, int album_id, int w, int h) {
+	    public static Bitmap getArtworkQuick(Context context, int album_id, int w, int h) {
 	        // NOTE: There is in fact a 1 pixel frame in the ImageView used to
 	        // display this drawable. Take it into account now, so we don't have to
 	        // scale later.

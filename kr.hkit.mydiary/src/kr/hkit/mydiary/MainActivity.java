@@ -2,6 +2,7 @@ package kr.hkit.mydiary;
 
 import java.util.ArrayList;
 
+import kr.hkit.mydiary.read.ReadDiary;
 import kr.hkit.mydiary.sqllite.DiaryDAO;
 import kr.hkit.mydiary.sqllite.DiaryDbHelper;
 import kr.hkit.mydiary.sqllite.SelectForList;
@@ -14,11 +15,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -58,11 +61,34 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
+		displayDiaryList();
+		
+	}
+
+	//db에 저장되어있는 일기 불러온다잉 
+	private void displayDiaryList() {
 		dao = DiaryDAO.open(this);
 		list = (ListView) findViewById(R.id.main_diary_listview);
 		listinfo = new ArrayList<SelectForList>();
 		listinfo = dao.selectForList();
-		list.setAdapter(adapter);
+		//리스트뿌리는데 필요한 정보만 받아옴.
+			
+		DiaryListAdapter listAdapter = new DiaryListAdapter(this, listinfo, R.layout.diary_listrow);
+		list.setAdapter(listAdapter);
+		//커스텀 어댑터로 화면에 뿌려줌.
+		
+		//리스트뷰 클릭시 글 읽기로 넘어감. id넘겨줘서 해당 일기에 대한 모든정보 select
+		list.setOnItemClickListener(new ListView.OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parentView, View childView, int position, long id) {
+				Intent intent = new Intent(MainActivity.this, ReadDiary.class);
+				
+				intent.putExtra("diaryID", listinfo.get(position).getId());
+				startActivityForResult(intent, 0);
+			}
+			
+		});
 		
 	}
 
@@ -164,5 +190,12 @@ public class MainActivity extends Activity implements
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		dao.close();
 	}
 }

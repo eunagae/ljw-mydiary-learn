@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class DiaryDbHelper extends SQLiteOpenHelper {
 	public final static String DB_NAME = "EngWord.db";
-	public final static int DB_VERSION = 2;
+	public final static int DB_VERSION = 3;
 	public final static String TAG = "SQLiteOpenHelper";
 	
 	public DiaryDbHelper(Context context) {
@@ -33,6 +33,9 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
 				+ "picpath5 text, "
 				+ "picpath6 text, "
 				+ "mp3path text, "
+				+ "mp3title text, "
+				+ "mp3singer text, "
+				+ "mp3albumartid int, "
 				+ "addr text, "
 				+ "latitude text, "
 				+ "longtude text, "
