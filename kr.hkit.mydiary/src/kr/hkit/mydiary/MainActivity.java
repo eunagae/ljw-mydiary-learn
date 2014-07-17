@@ -8,6 +8,7 @@ import kr.hkit.mydiary.sqllite.DiaryDbHelper;
 import kr.hkit.mydiary.sqllite.SelectForList;
 import kr.hkit.mydiary.write.WriteDiary;
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -52,7 +53,9 @@ public class MainActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		Log.d("dd", "main on create");
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
@@ -61,10 +64,18 @@ public class MainActivity extends Activity implements
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
-		displayDiaryList();
+		
+		
 		
 	}
-
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		displayDiaryList();
+	}
+	
+	
 	//db에 저장되어있는 일기 불러온다잉 
 	private void displayDiaryList() {
 		dao = DiaryDAO.open(this);
@@ -92,6 +103,7 @@ public class MainActivity extends Activity implements
 		
 	}
 
+	
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
@@ -190,6 +202,8 @@ public class MainActivity extends Activity implements
 			((MainActivity) activity).onSectionAttached(getArguments().getInt(
 					ARG_SECTION_NUMBER));
 		}
+		
+		
 	}
 	
 	@Override

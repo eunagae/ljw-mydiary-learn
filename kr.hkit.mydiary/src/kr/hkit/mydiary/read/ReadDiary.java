@@ -8,9 +8,11 @@ import kr.hkit.mydiary.sqllite.DiaryDAO;
 import kr.hkit.mydiary.sqllite.SelectAll;
 import kr.hkit.mydiary.write.MusicPic;
 import kr.hkit.mydiary.write.MusicPic.MusicAdapter;
+import kr.hkit.mydiary.write.WriteDiary;
 
 import com.example.kr.hkit.mydiary.R;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -24,28 +26,34 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ReadDiary extends Activity {
+	private static final int FROM_READDIARY = 4;
 	DiaryDAO dao;
 	private int diaryID;
 	private SelectAll diaryInfo;
 	MediaPlayer player;
 	boolean playState;
 	
-	ImageButton editDiary, deleteDiary, mp3PlayBtn, mp3StopBtn;
+	ImageButton mp3PlayBtn, mp3StopBtn, mapGoBtn, urlGoBtn;
 	
 	TextView title, date, content, mp3Title, mp3Singer, addr, url;
 
 	ImageView img1, img2, img3, img4, img5, img6, mp3AlbumArt;
 	
+	View separator_img, separator_mp3, separator_addr, separator_url;
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -56,8 +64,60 @@ public class ReadDiary extends Activity {
 		ViewByIdMustNeed();
 		ViewByIdImg();
 		ViewByIdMp3();
+		ViewByIdMap();
+		ViewByIdURL();
 	}
-
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.read_barmenu, menu);
+				
+		restoreActionBar();
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		dao = DiaryDAO.open(ReadDiary.this);
+		boolean isSuccess = false;
+		switch(item.getItemId()){
+		
+		//글 수정
+		case R.id.read_edit_barmenu:
+			Intent intent = new Intent(ReadDiary.this, WriteDiary.class);
+			intent.putExtra("DiaryID", diaryID);
+			startActivityForResult(intent, FROM_READDIARY);
+			break;
+			
+		//글 삭제.
+		case R.id.read_delete_barmenu:
+			isSuccess = dao.delete(diaryInfo.getId());
+			if(isSuccess == true){
+				Toast.makeText(ReadDiary.this, "삭제 완료.", 0).show();
+				dao.close();
+				finish();
+			}
+			break;
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
+	 
+	
+	public void restoreActionBar() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(R.string.barname);
+	}
+	/**
+	 *  
+	 *  여기서 부터는 oncreate() 초기화.
+	 *  
+	 *  
+	 */
 	private void getDataFromReadDiary() {
 		Intent intent = getIntent();
 		diaryID = intent.getIntExtra("diaryID", 0);
@@ -68,10 +128,8 @@ public class ReadDiary extends Activity {
 
 	}
 
+	// 제목, 날짜, 본문 무조건 입력되는것들.
 	private void ViewByIdMustNeed() {
-		//필수요소
-		editDiary = (ImageButton) findViewById(R.id.read_edit_btn);
-		deleteDiary = (ImageButton) findViewById(R.id.read_delete_btn);
 		
 		//제목
 		title = (TextView) findViewById(R.id.read_title_tv);
@@ -96,6 +154,7 @@ public class ReadDiary extends Activity {
 		img4 = (ImageView) findViewById(R.id.read_img4);
 		img5 = (ImageView) findViewById(R.id.read_img5);
 		img6 = (ImageView) findViewById(R.id.read_img6);
+		separator_img = findViewById(R.id.read_sepataor_img);
 		
 		if(diaryInfo.getPicpath1() == null){
 			img1.setVisibility(View.GONE);
@@ -104,6 +163,7 @@ public class ReadDiary extends Activity {
 			img4.setVisibility(View.GONE);
 			img5.setVisibility(View.GONE);
 			img6.setVisibility(View.GONE);
+			separator_img.setVisibility(View.GONE);
 			return;
 		}
 			
@@ -172,18 +232,21 @@ public class ReadDiary extends Activity {
 		return bmp;
 	}
 
+	//mp3 
 	private void ViewByIdMp3() {
 		mp3Title = (TextView) findViewById(R.id.read_mp3_title_tv);
 		mp3Singer = (TextView) findViewById(R.id.read_mp3_singer_tv);
 		mp3PlayBtn = (ImageButton) findViewById(R.id.read_mp3_play_btn);
 		mp3AlbumArt = (ImageView) findViewById(R.id.read_albumart_img);
 		mp3StopBtn = (ImageButton) findViewById(R.id.read_mp3_stop_btn);
+		separator_mp3 = findViewById(R.id.read_separator_mp3);
 		
 		if(diaryInfo.getMp3Path() == null){
 			mp3Title.setVisibility(View.GONE);
 			mp3Singer.setVisibility(View.GONE);
 			mp3PlayBtn.setVisibility(View.GONE);
 			mp3StopBtn.setVisibility(View.GONE);
+			separator_mp3.setVisibility(View.GONE);
 			return;
 		}
 	
@@ -204,7 +267,7 @@ public class ReadDiary extends Activity {
 						player.start();
 						playState = true;
 					}else{
-						player.release();
+						player.start();
 						
 					}
 				} catch (IllegalArgumentException e) {
@@ -232,6 +295,59 @@ public class ReadDiary extends Activity {
 		});
 	}
 
+	//map
+	private void ViewByIdMap() {
+		addr = (TextView) findViewById(R.id.read_addr_tv);
+		mapGoBtn = (ImageButton) findViewById(R.id.read_go_map);
+		separator_addr = findViewById(R.id.read_separator_addr);
+		
+		if(diaryInfo.getAddr() == null){
+			addr.setVisibility(View.GONE);
+			separator_addr.setVisibility(View.GONE);
+			mapGoBtn.setVisibility(View.GONE);
+			return;
+		}
+		
+		addr.setText(diaryInfo.getAddr());
+		mapGoBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				double latitude = Double.parseDouble(diaryInfo.getLatitude());
+				double longitude =Double.parseDouble(diaryInfo.getLongtude()); 
+						
+				String pos = String.format("geo:%f,%f?z=17", latitude, longitude);
+				Uri uri = Uri.parse(pos);
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(intent);
+			}
+		});
+	}
+	
+	//url
+	private void ViewByIdURL() {
+		url = (TextView) findViewById(R.id.read_url_tv);
+		separator_url = findViewById(R.id.read_separator_url);
+		urlGoBtn = (ImageButton) findViewById(R.id.read_go_url);
+		
+		if(diaryInfo.getUrl() == null){
+			url.setVisibility(View.GONE);
+			urlGoBtn.setVisibility(View.GONE);
+			separator_url.setVisibility(View.GONE);
+			return;
+		}
+		url.setText(diaryInfo.getUrl());
+		urlGoBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(Intent.ACTION_VIEW, 
+						Uri.parse(diaryInfo.getUrl()));
+				startActivity(intent); 	
+			}
+		});
+		
+	}
+	
 	 @Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub

@@ -77,6 +77,7 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+        
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
     }
@@ -87,6 +88,8 @@ public class NavigationDrawerFragment extends Fragment {
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
     }
+    
+    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,8 +107,6 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
                         getString(R.string.title_section3),
                         getString(R.string.title_section4),
                 }));
@@ -243,9 +244,8 @@ public class NavigationDrawerFragment extends Fragment {
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    
-    //*********************** 쓰기 메뉴
+        
+    // 네비게이션드라워 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -268,7 +268,7 @@ public class NavigationDrawerFragment extends Fragment {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
+        
     }
 
     private ActionBar getActionBar() {

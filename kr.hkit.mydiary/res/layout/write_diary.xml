@@ -13,20 +13,20 @@
             android:id="@+id/write_diary_title_edit"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:ems="10" >
 
             <requestFocus />
         </EditText>
 
-        <Button
+        <ImageButton
             android:id="@+id/write_diary_writesubmit_btn"
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="mOnClick"
-            android:text="@string/write_diary_writesubmit_btn" />
+            android:src="@android:drawable/ic_menu_save" />
+
     </LinearLayout>
 
     <LinearLayout

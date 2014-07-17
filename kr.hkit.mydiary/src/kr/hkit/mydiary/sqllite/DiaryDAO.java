@@ -83,17 +83,17 @@ public class DiaryDAO {
 	}
 	
 	public boolean delete(int id){
-/*		String sql = "delete from dic where _id="+id+";";
+		String sql = "delete from diary where _id="+id+";";
 		try{
 			db.execSQL(sql);
 		}catch(SQLException e){
 			Log.d("WordDAO", "delete Error " + e.getMessage());
 			return false;
 		}
-		return true;*/
-		String[] args = {String.valueOf(id)};
-		db.delete("dic", "_id=?", args);
 		return true;
+		/*String[] args = {String.valueOf(id)};
+		db.delete("dic", "_id=?", args);
+		return true;*/
 	}
 	
 	public ArrayList<SelectForList> selectForList(){
@@ -166,8 +166,23 @@ public class DiaryDAO {
 		
 	}
 	
-	public boolean update(int id, String eng, String han){
-		String sql = "update dic set han='"+han+"', eng = '"+eng+"' where _id ="+id+";";
+	public boolean update(int id, String title, 
+			int year, int month, int day, int hour, int minute, 
+			String content,
+			String picpath1, String picpath2, String picpath3, String picpath4, String picpath5, String picpath6,
+			String mp3path, String mp3Title, String mp3Singer, int mp3AlbumArtID,
+			String addr, String latitude, String longtude, String url){
+		
+		String sql = "update diary set title='"+title+
+				"', year = '"+year+"', month = '"+month+"', day = '"+day+"', hour = '"+hour+"', minute = '"+minute+
+				"', content = '"+content+
+				"', picpath1 = '"+picpath1+"', picpath2 = '"+picpath2+"', picpath3 = '"+picpath3+
+				"', picpath4 = '"+picpath4+"', picpath5 = '"+picpath5+"', picpath6 = '"+picpath6+
+				"', mp3path = '"+mp3path+"', mp3title = '"+mp3Title+"', mp3singer = '"+mp3Singer+"', mp3albumartid = '"+mp3AlbumArtID+
+				"', addr = '"+addr+"', latitude = '"+latitude+"', longtude = '"+longtude+
+				"', url = '"+url+
+				"' where _id ="+id+";";
+	
 		try{
 			db.execSQL(sql);
 		}catch(SQLException e){
