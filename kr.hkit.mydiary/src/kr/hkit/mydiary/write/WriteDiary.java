@@ -6,9 +6,11 @@ import java.util.GregorianCalendar;
 
 import kr.hkit.mydiary.sqllite.DiaryDAO;
 import kr.hkit.mydiary.sqllite.DiaryDbHelper;
+import kr.hkit.mydiary.sqllite.SelectAll;
 
 import com.example.kr.hkit.mydiary.R;
 
+import android.R.integer;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -35,9 +38,12 @@ public class WriteDiary extends Activity {
 	public static final int FROM_IMAGEPIC =1;
 	public static final int FROM_MUSICPIC = 2;
 	public static final int FROM_LOCATIONPIC = 3;
+	private static final int FROM_READDIARY = 4;
 	
 	
 	private DiaryDAO dao;
+	private int diaryID;
+	private SelectAll diaryInfo;
 	
 	private ArrayList<String> picturePathLists = new ArrayList<String>();	//사진리스트.
 	private String musicPath, mp3Title, mp3Singer;				// mp3 파일 경로.
@@ -48,6 +54,10 @@ public class WriteDiary extends Activity {
 	private Button datePickerBtn;
 	private EditText title;
 	private EditText content;
+	private ImageButton submitBtn;
+	
+	
+	private boolean isEdit;
 	
 	String[] picPath = new String[6];
 	
@@ -55,8 +65,6 @@ public class WriteDiary extends Activity {
 	//날짜
 	int mYear, mMonth, mDay, mHour, mMinute;
 
-	
-	
 	public ArrayList<String> getPicturePathLists() {
 		return picturePathLists;
 	}
@@ -73,24 +81,87 @@ public class WriteDiary extends Activity {
 		datePickerBtn = (Button) findViewById(R.id.write_diary_datepicker_btn);
 		title = (EditText) findViewById(R.id.write_diary_title_edit);
 		content = (EditText) findViewById(R.id.write_diary_context_edit);
+		submitBtn = (ImageButton) findViewById(R.id.write_diary_writesubmit_btn);
 		
 		Calendar cal = new GregorianCalendar();
 		mYear = cal.get(Calendar.YEAR);
 		mMonth = cal.get(Calendar.MONTH);
+		mMonth = mMonth +1;
 		mDay = cal.get(Calendar.DAY_OF_MONTH);
 		mHour = cal.get(Calendar.HOUR_OF_DAY);
 		mMinute = cal.get(Calendar.MINUTE);
 	
 		addr = new AddInfo(null, null, null);
+		isEdit = false;
 		UpdateNow();
+		
+		
+		getDataforEdit();
 	}
 	
+	// 수정시 데이터 박아옴
+	private void getDataforEdit() {
+		Intent intent = getIntent();
+		if(intent.getIntExtra("DiaryID",-1) != -1){
+
+			diaryID = intent.getIntExtra("DiaryID", 0);
+			dao = DiaryDAO.open(WriteDiary.this);
+			diaryInfo = new SelectAll();
+			diaryInfo = dao.selectAll(diaryID);
+    	
+			title.setText(diaryInfo.getTitle());
+			mYear = diaryInfo.getYear();
+			mMonth = diaryInfo.getMonth();
+			mDay = diaryInfo.getDay();
+			content.setText(diaryInfo.getContent());
+			musicPath = diaryInfo.getMp3Path();
+			mp3Title = diaryInfo.getMp3Title();
+			mp3Singer = diaryInfo.getMp3Singer();
+			mp3AlbumArtID = diaryInfo.getMp3AlbumArtID();
+			addr.setAddress(diaryInfo.getAddr());
+			addr.setLatitude(diaryInfo.getLatitude());
+			addr.setLongtude(diaryInfo.getLongtude());
+			url = diaryInfo.getUrl();
+			
+			isEdit = true;
+			submitBtn.setImageResource(android.R.drawable.ic_menu_preferences);
+			
+			for(int i=0; i<6; i++){
+				picturePathLists.add("");
+			}
+			
+			
+			if(diaryInfo.getPicpath1() == null){return;}
+				picturePathLists.set(0, diaryInfo.getPicpath1());
+			
+			Log.d("dd", " " + picturePathLists.get(0).toString());
+			
+			if(diaryInfo.getPicpath2() == null){return;}
+			picturePathLists.set(1, diaryInfo.getPicpath2());			
+			Log.d("dd", " " + picturePathLists.get(1).toString());
+    	
+			if(diaryInfo.getPicpath3() == null)return;
+			picturePathLists.set(2, diaryInfo.getPicpath3());			
+			Log.d("dd", " " + picturePathLists.get(2).toString());
+    	
+			if(diaryInfo.getPicpath4() == null)return;
+			picturePathLists.set(3, diaryInfo.getPicpath4());    	
+			
+			if(diaryInfo.getPicpath5() == null)return;
+			picturePathLists.set(4, diaryInfo.getPicpath5());    	
+			
+			if(diaryInfo.getPicpath6() == null)return;
+			picturePathLists.set(5, diaryInfo.getPicpath6());    			
+			
+		}
+	}
+
 	public void mOnClick(View v){
 		Intent intent = null;
 		
 		//날짜, 시간 설정
 		if(v.getId() ==  R.id.write_diary_daypicker_btn){
-			new DatePickerDialog(WriteDiary.this, mDateSetListener, mYear, mMonth, mDay).show();
+			new DatePickerDialog(WriteDiary.this, mDateSetListener, mYear, mMonth-1, mDay).show();
 			return;
 		}
 		else if(v.getId() == R.id.write_diary_datepicker_btn){
@@ -104,9 +175,9 @@ public class WriteDiary extends Activity {
 			
 			if(picturePathLists.size() != 0){
 				intent.putStringArrayListExtra("PicPathFromWD", picturePathLists);
-				
 				startActivityForResult(intent, 0);
 			}else{
+				
 				startActivityForResult(intent, 3);
 			}
 			return;
@@ -146,15 +217,35 @@ public class WriteDiary extends Activity {
 		
 		//글 등록
 		else if(v.getId() == R.id.write_diary_writesubmit_btn){
-			boolean result;
-		
 			dao = DiaryDAO.open(this);
-			
+		
+			if(isEdit == true){
+				if(validCheck() == false){
+					Toast.makeText(this, "내용이 없습니다.", 0).show();
+					return;
+				}else{
+					dao.update(diaryID, 
+							title.getText().toString(), 
+							mYear, mMonth, mDay, mHour, mMinute, 
+							content.getText().toString(), 
+							picPath[0],
+							picPath[1],
+							picPath[2],
+							picPath[3],
+							picPath[4],
+							picPath[5],
+							musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
+							addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
+							url);
+							Toast.makeText(WriteDiary.this, "수정 완료", 0).show();
+							finish();
+					}
+		}else{
 			if(validCheck() == false){
 				Toast.makeText(this, "내용이 없습니다.", 0).show();
 				return;
 			}else{
-				result = dao.insert(title.getText().toString(), 
+							dao.insert(title.getText().toString(), 
 										mYear, mMonth, mDay, mHour, mMinute, 
 										content.getText().toString(), 
 										picPath[0],
@@ -169,9 +260,11 @@ public class WriteDiary extends Activity {
 										);
 				
 				dao.close();
+				
 				finish();
 				return;
 			}
+		}
 		}
 	}
 	
@@ -181,6 +274,7 @@ public class WriteDiary extends Activity {
 			return false;
 		}
 		
+		// 사진경로가 있는거 까지만 값 옮기고 null인 인덱스는 null로 넣음ㅋ 무슨말이냐
 		if (picturePathLists.isEmpty() == false) {
 			int j =0;
 			for (int i = 0; i < picturePathLists.size(); i++) {
@@ -203,7 +297,7 @@ public class WriteDiary extends Activity {
 		
 	}
 
-	// ImagePicker의 사진경로값 받아오기
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		//super.onActivityResult(requestCode, resultCode, data);
 		
@@ -227,6 +321,7 @@ public class WriteDiary extends Activity {
 	    	addr = new AddInfo(data.getStringArrayExtra("addr")[0],data.getStringArrayExtra("addr")[1],data.getStringArrayExtra("addr")[2] );
 	    	
 	    }
+
 	    // 수행을 제대로 하지 못한 경우
 	    else if(resultCode == RESULT_CANCELED){
 	         Toast.makeText(this, "취소", 0).show();
@@ -257,11 +352,8 @@ public class WriteDiary extends Activity {
 	};
 
 	private void UpdateNow() {
-		dayPickerBtn.setText(String.format("%d/%d/%d", mYear, mMonth+1, mDay ));
+		dayPickerBtn.setText(String.format("%d/%d/%d", mYear, mMonth, mDay ));
 		datePickerBtn.setText(String.format("%d : %d", mHour, mMinute));
 		
 	}
-	
-
-	
 }

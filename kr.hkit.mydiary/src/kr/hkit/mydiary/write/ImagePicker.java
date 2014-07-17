@@ -51,6 +51,7 @@ public class ImagePicker extends Activity {
 			picList.add(info);
 			picPathList.add(null);
 		}
+		Log.d("dd","in create "+ Integer.toString(picList.size()) +"/"+Integer.toString(picPathList.size()));
 		
 		picList.get(0).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView1));
 		picList.get(1).setPicture((ImageView) findViewById(R.id.imagepicker_ImageView2));
@@ -71,10 +72,14 @@ public class ImagePicker extends Activity {
 				BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 8;
 				
+                Log.d("dd","in intent "+picList.get(i).getPicturePath());
+                
                 Uri uri = Uri.fromFile(new File(picList.get(i).getPicturePath()));
             	Bitmap bmp = BitmapFactory.decodeFile(uri.getPath());
             	
             	picList.get(i).getPicture().setImageBitmap(bmp);
+        		
+
 			}  
 		}		
 	}
@@ -201,9 +206,11 @@ public class ImagePicker extends Activity {
 			Intent intent = new Intent();
 			
 			for(int i =0; i<picList.size(); i++){
-				
+					Log.d("dd","in onclick"+ Integer.toString(picList.size()) +"/"+Integer.toString(picPathList.size()));
+					if( picList.get(i).getPicturePath().isEmpty()){
+						picPathList.set(i, null);
+					}
 					picPathList.set(i, picList.get(i).getPicturePath());
-					
 			}
 			
 			intent.putStringArrayListExtra("PicturesPath", picPathList);

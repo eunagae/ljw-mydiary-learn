@@ -86,6 +86,8 @@ public class DiaryListAdapter extends BaseAdapter {
 		}
 		
 		subtitle.setText(listInfo.get(position).getSubtitle().toString());
+		
+		
 		return convertView;
 	}
 

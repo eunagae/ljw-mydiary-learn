@@ -16,24 +16,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <ImageButton
-                    android:id="@+id/read_edit_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-                <TextView
-                    android:id="@+id/read_date_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/read_title_tv"
-                    android:layout_centerHorizontal="true"
-                    android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp" >
 
                 <TextView
                     android:id="@+id/read_title_tv"
@@ -44,75 +31,104 @@
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <ImageButton
-                    android:id="@+id/read_delete_btn"
+                <TextView
+                    android:id="@+id/read_date_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/read_edit_btn"
-                    android:src="@android:drawable/ic_menu_edit" />
+                    android:layout_alignBaseline="@+id/read_title_tv"
+                    android:layout_alignBottom="@+id/read_title_tv"
+                    android:layout_alignParentRight="true"
+                    android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/read_imglayout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-               
-               >
+		<View
+		    android:layout_width="match_parent"
+		    android:layout_height="2dp"
+		    android:background="#DCDCDC" />
 
+          <LinearLayout
+              android:id="@+id/read_imglayout1"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingBottom="10dp"
+              android:paddingLeft="15dp"
+              android:paddingRight="15dp"
+              android:paddingTop="10dp" >
+          
                 <ImageView
                     android:id="@+id/read_img1"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    />
+                    android:maxHeight="100dp"
+                    android:maxWidth="30dp"
+                    android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img2"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                   />
+                    android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img3"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    />
+                    android:scaleType="centerInside" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/read_imglayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
 
                 <ImageView
                     android:id="@+id/read_img4"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    />
+                    android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img5"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    />
+                    android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img6"
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                     />
-            </LinearLayout>
+                    android:scaleType="centerInside" />
 
+            </LinearLayout>
+ 			
+ 			<View 
+ 			android:id="@+id/read_sepataor_img"
+		    android:layout_width="match_parent"
+		    android:layout_height="2dp"
+		    android:background="#DCDCDC"
+		    />
+            
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:paddingBottom="30dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="30dp" >
 
                 <TextView
                     android:id="@+id/read_content_tv"
@@ -121,11 +137,21 @@
                     android:text="Medium Text"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
+            
+            <View 
+		    android:layout_width="match_parent"
+		    android:layout_height="2dp"
+		    android:background="#DCDCDC"
+		    />
 
             <LinearLayout
                 android:id="@+id/read_mp3_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -141,6 +167,8 @@
 
                 </LinearLayout>
 
+         
+                
                 <LinearLayout
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
@@ -184,37 +212,85 @@
                 </LinearLayout>
 
             </LinearLayout>
-
+	
+              <View 
+             	android:id="@+id/read_separator_mp3"
+		    	android:layout_width="match_parent"
+		    	android:layout_height="2dp"
+		    	android:background="#DCDCDC"
+		    />
+            
             <LinearLayout
                 android:id="@+id/read_addr_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
 
                 <TextView
                     android:id="@+id/read_addr_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="5"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <ImageButton
+                    android:id="@+id/read_go_map"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_dialog_map" />
             </LinearLayout>
 
+              <View 
+             	android:id="@+id/read_separator_addr"
+		    	android:layout_width="match_parent"
+		    	android:layout_height="2dp"
+		    	android:background="#DCDCDC"
+		    />
+            
             <LinearLayout
                 android:id="@+id/read_url_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
 
                 <TextView
                     android:id="@+id/read_url_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="5"
                     android:text="Large Text"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#0000ff" />
-            </LinearLayout>
-        </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/read_go_url"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_menu_search" />
+            </LinearLayout>
+            
+              <View 
+             	android:id="@+id/read_separator_url"
+		    	android:layout_width="match_parent"
+		    	android:layout_height="2dp"
+		    	android:background="#DCDCDC"
+		    />
+            
+        </LinearLayout>
+        
     </ScrollView>
 
 </LinearLayout>
