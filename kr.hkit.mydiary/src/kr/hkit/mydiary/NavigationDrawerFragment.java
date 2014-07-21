@@ -1,6 +1,8 @@
 package kr.hkit.mydiary;
 
 
+import kr.hkit.mydiary.read.AllLocationVIewer;
+
 import com.example.kr.hkit.mydiary.R;
 
 import android.app.Activity;
@@ -9,10 +11,12 @@ import android.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -100,6 +104,12 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
+                switch(position){
+                case 0:
+                	Intent intent = new Intent(getActivity(), AllLocationVIewer.class);
+                    startActivity(intent);
+                }
+                
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(

@@ -40,52 +40,50 @@
                     android:layout_alignParentRight="true"
                     android:text="Small Text"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
-
             </RelativeLayout>
 
-		<View
-		    android:layout_width="match_parent"
-		    android:layout_height="2dp"
-		    android:background="#DCDCDC" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
 
-          <LinearLayout
-              android:id="@+id/read_imglayout1"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingBottom="10dp"
-              android:paddingLeft="15dp"
-              android:paddingRight="15dp"
-              android:paddingTop="10dp" >
-          
+            <LinearLayout
+                android:id="@+id/read_imglayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
+
                 <ImageView
                     android:id="@+id/read_img1"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:maxHeight="100dp"
-                    android:maxWidth="30dp"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img2"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img3"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
-
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/read_imglayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingBottom="10dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
@@ -93,34 +91,32 @@
 
                 <ImageView
                     android:id="@+id/read_img4"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img5"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
 
                 <ImageView
                     android:id="@+id/read_img6"
-                    android:layout_width="1dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:onClick="mOnClick"
                     android:scaleType="centerInside" />
-
             </LinearLayout>
- 			
- 			<View 
- 			android:id="@+id/read_sepataor_img"
-		    android:layout_width="match_parent"
-		    android:layout_height="2dp"
-		    android:background="#DCDCDC"
-		    />
-            
+
+            <View
+                android:id="@+id/read_sepataor_img"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -135,14 +131,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Medium Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textSize="15dp" />
             </LinearLayout>
-            
-            <View 
-		    android:layout_width="match_parent"
-		    android:layout_height="2dp"
-		    android:background="#DCDCDC"
-		    />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
 
             <LinearLayout
                 android:id="@+id/read_mp3_layout"
@@ -164,11 +159,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/common_signin_btn_icon_normal_light" />
-
                 </LinearLayout>
 
-         
-                
                 <LinearLayout
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
@@ -180,14 +172,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Large Text"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/read_mp3_singer_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Small Text"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textSize="10dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,16 +202,14 @@
                         android:layout_weight="1"
                         android:src="@android:drawable/ic_media_play" />
                 </LinearLayout>
-
             </LinearLayout>
-	
-              <View 
-             	android:id="@+id/read_separator_mp3"
-		    	android:layout_width="match_parent"
-		    	android:layout_height="2dp"
-		    	android:background="#DCDCDC"
-		    />
-            
+
+            <View
+                android:id="@+id/read_separator_mp3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
+
             <LinearLayout
                 android:id="@+id/read_addr_layout"
                 android:layout_width="match_parent"
@@ -236,8 +226,7 @@
                     android:layout_width="1dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:text="Large Text"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="Large Text" />
 
                 <ImageButton
                     android:id="@+id/read_go_map"
@@ -247,13 +236,12 @@
                     android:src="@android:drawable/ic_dialog_map" />
             </LinearLayout>
 
-              <View 
-             	android:id="@+id/read_separator_addr"
-		    	android:layout_width="match_parent"
-		    	android:layout_height="2dp"
-		    	android:background="#DCDCDC"
-		    />
-            
+            <View
+                android:id="@+id/read_separator_addr"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
+
             <LinearLayout
                 android:id="@+id/read_url_layout"
                 android:layout_width="match_parent"
@@ -271,7 +259,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:text="Large Text"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#0000ff" />
 
                 <ImageButton
@@ -281,14 +268,12 @@
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_menu_search" />
             </LinearLayout>
-            
-              <View 
-             	android:id="@+id/read_separator_url"
-		    	android:layout_width="match_parent"
-		    	android:layout_height="2dp"
-		    	android:background="#DCDCDC"
-		    />
-            
+
+            <View
+                android:id="@+id/read_separator_url"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#DCDCDC" />
         </LinearLayout>
         
     </ScrollView>
