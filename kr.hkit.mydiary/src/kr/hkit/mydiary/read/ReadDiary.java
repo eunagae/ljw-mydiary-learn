@@ -3,6 +3,7 @@ package kr.hkit.mydiary.read;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import kr.hkit.mydiary.sqllite.DiaryDAO;
 import kr.hkit.mydiary.sqllite.SelectAll;
@@ -145,6 +146,66 @@ public class ReadDiary extends Activity {
 		content.setText(diaryInfo.getContent());
 		
 	}
+	
+	public void mOnClick(View v){
+		Intent intent = new Intent(ReadDiary.this, ImageViewer.class);
+		
+		ArrayList<String> picPathList = new ArrayList<String>();
+		if(diaryInfo.getPicpath1() != null){
+			picPathList.add(diaryInfo.getPicpath1());
+		}
+		if(diaryInfo.getPicpath2() != null){
+			picPathList.add(diaryInfo.getPicpath2());
+		}
+		if(diaryInfo.getPicpath3() != null){
+			picPathList.add(diaryInfo.getPicpath3());
+		}
+		if(diaryInfo.getPicpath4() != null){
+			picPathList.add(diaryInfo.getPicpath4());
+		}
+		if(diaryInfo.getPicpath5() != null){
+			picPathList.add(diaryInfo.getPicpath5());
+		}
+		if(diaryInfo.getPicpath6() != null){
+			picPathList.add(diaryInfo.getPicpath6());
+		}
+		
+		int imgID = 0;
+		switch (v.getId()) {
+		case R.id.read_img1:
+			imgID = 0;
+			intent.putExtra("imgID", imgID);
+			break;
+
+		case R.id.read_img2:
+			imgID = 1;
+			intent.putExtra("imgID", imgID);
+			break;
+			
+		case R.id.read_img3:
+			imgID = 2;
+			intent.putExtra("imgID", imgID);
+			break;
+			
+		case R.id.read_img4:
+			imgID = 3;
+			intent.putExtra("imgID", imgID);
+			break;
+			
+		case R.id.read_img5:
+			imgID = 4;
+			intent.putExtra("imgID", imgID);
+			break;
+			
+		case R.id.read_img6:
+			imgID = 5;
+			intent.putExtra("imgID", imgID);
+			break;
+		}
+		intent.putStringArrayListExtra("imgList", picPathList);
+		startActivity(intent);
+	}
+	
 	
 	// 사진 보여주기
 	private void ViewByIdImg() {

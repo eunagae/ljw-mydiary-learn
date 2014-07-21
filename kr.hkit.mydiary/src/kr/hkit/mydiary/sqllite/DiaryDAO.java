@@ -96,6 +96,26 @@ public class DiaryDAO {
 		return true;*/
 	}
 	
+	public ArrayList<SelectForAllLocation> selectForAllLocation(){
+		String sql = "Select _id, title, addr, latitude, longtude from diary;";
+		Cursor cursor = db.rawQuery(sql, null);
+		ArrayList<SelectForAllLocation> allLocationInfo = new ArrayList<SelectForAllLocation>();
+		
+		while(cursor.moveToNext()){
+			int id = cursor.getInt(0);
+			String title = cursor.getString(1);
+			String addr = cursor.getString(2);
+			String latitude = cursor.getString(3);
+			String longtude = cursor.getString(4);
+			
+			if(addr !=null){
+				allLocationInfo.add(new SelectForAllLocation(id, title, addr, latitude, longtude));
+			}
+		}
+		
+		return allLocationInfo;
+	}
+	
 	public ArrayList<SelectForList> selectForList(){
 		String sql = "Select _id, title, content, picpath1 from diary;";
 		Cursor cursor = db.rawQuery(sql, null);
@@ -107,8 +127,9 @@ public class DiaryDAO {
 			String subtitle = cursor.getString(2);
 			String picpath = cursor.getString(3);
 			
+			// 리스트에는 본문의 20글자만 보여줌
 			if(subtitle.length() > 20){
-				subtitle.subSequence(0, 19);
+				subtitle = subtitle.substring(0, 20);
 			}
 			listinfo.add(new SelectForList(id, title, subtitle, picpath));
 		}

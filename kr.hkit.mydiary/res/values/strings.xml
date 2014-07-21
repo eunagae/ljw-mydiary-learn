@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">이름을뭘로할까</string>
-    <string name="barname">이정원</string>
+    <string name="app_name">일기</string>
+    <string name="barname">일기</string>
     <string name="title_section1">시간으로 정렬</string>
     <string name="title_section2">사진으로 정렬</string>
     <string name="title_section3">내가 들른곳</string>

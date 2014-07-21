@@ -63,10 +63,7 @@ public class MainActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		
-		
-		
-		
+
 	}
 	@Override
 	protected void onStart() {
@@ -74,7 +71,6 @@ public class MainActivity extends Activity implements
 		super.onStart();
 		displayDiaryList();
 	}
-	
 	
 	//db에 저장되어있는 일기 불러온다잉 
 	private void displayDiaryList() {
@@ -157,8 +153,7 @@ public class MainActivity extends Activity implements
 		}
 		if (id == R.id.write_inbarmenu) {
 			intent = new Intent(this, WriteDiary.class);
-			startActivity(intent);
-			
+			startActivity(intent);			
 		}
 		return super.onOptionsItemSelected(item);
 	}

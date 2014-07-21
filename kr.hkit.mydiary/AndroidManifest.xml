@@ -21,9 +21,12 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        
+        >
         <activity
             android:name="kr.hkit.mydiary.MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="kr.hkit.mydiary.write.WriteDiary" >
+        <activity android:name="kr.hkit.mydiary.write.WriteDiary" 
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name="kr.hkit.mydiary.write.ImagePicker"></activity>
         
@@ -48,7 +52,9 @@
         <activity android:name="kr.hkit.mydiary.write.MusicPic"></activity>
         <activity android:theme="@android:style/Theme.NoTitleBar" android:name="kr.hkit.mydiary.write.LocationPicker"></activity>
         <activity android:name="kr.hkit.mydiary.write.URL"></activity>
-        <activity android:name="kr.hkit.mydiary.read.ReadDiary"></activity>        
+        <activity android:name="kr.hkit.mydiary.read.ReadDiary"></activity>
+        <activity android:name="kr.hkit.mydiary.read.ImageViewer"></activity>
+        <activity android:theme="@android:style/Theme.NoTitleBar"  android:name="kr.hkit.mydiary.read.AllLocationVIewer"></activity>        
     </application>
     
     <uses-feature

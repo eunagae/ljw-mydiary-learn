@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.maps.MapController;
@@ -58,7 +59,7 @@ public class LocationPicker extends FragmentActivity {
 		setContentView(R.layout.locationpicker);
 
 		setUpMapIfNeeded();
-		Log.d("dd", "why doesn't working!!!");
+		
 
 		// 서울로 설정.
 		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(DEFAULT_GP, 16);
@@ -248,9 +249,25 @@ public class LocationPicker extends FragmentActivity {
 				.icon(BitmapDescriptorFactory.defaultMarker())
 				).showInfoWindow();
 
+		
 		CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, 16);
 		mMap.animateCamera(cu);
 		
+		mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			Intent intent = new Intent();
+			@Override
+			public void onInfoWindowClick(Marker arg0) {
+				String[] addr = new String[3];
+				addr[0] = addinfo.getAddress();
+				addr[1] = addinfo.getLatitude();
+				addr[2] = addinfo.getLongtude();
+				intent.putExtra("addr", addr);
+				setResult(FROM_LOCATIONPIC, intent);
+				finish();
+				
+			}
+		});
+	/*	
 		mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 			Intent intent = new Intent();
 			@Override
@@ -265,7 +282,7 @@ public class LocationPicker extends FragmentActivity {
 				return true;
 			}
 		});
-		
+		*/
 	}
 
 	@Override
