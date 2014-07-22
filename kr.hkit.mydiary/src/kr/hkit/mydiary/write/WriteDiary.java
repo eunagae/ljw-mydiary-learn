@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.AlteredCharSequence;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -217,60 +218,86 @@ public class WriteDiary extends Activity {
 		
 		//글 등록
 		else if(v.getId() == R.id.write_diary_writesubmit_btn){
+			
+			AlertDialog.Builder builder  = new AlertDialog.Builder(this);
 			dao = DiaryDAO.open(this);
-		
-			if(isEdit == true){
-				if(validCheck() == false){
-					Toast.makeText(this, "내용이 없습니다.", 0).show();
-					return;
-				}else{
-					dao.update(diaryID, 
-							title.getText().toString(), 
-							mYear, mMonth, mDay, mHour, mMinute, 
-							content.getText().toString(), 
-							picPath[0],
-							picPath[1],
-							picPath[2],
-							picPath[3],
-							picPath[4],
-							picPath[5],
-							musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
-							addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
-							url);
-							Toast.makeText(WriteDiary.this, "수정 완료", 0).show();
-							finish();
-					}
-		}else{
-			if(validCheck() == false){
-				Toast.makeText(this, "내용이 없습니다.", 0).show();
-				return;
-			}else{
-							dao.insert(title.getText().toString(), 
-										mYear, mMonth, mDay, mHour, mMinute, 
-										content.getText().toString(), 
-										picPath[0],
-										picPath[1],
-										picPath[2],
-										picPath[3],
-										picPath[4],
-										picPath[5],
-										musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
-										addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
-										url
-										);
-				
-				dao.close();
-				
-				finish();
-				return;
-			}
-		}
+			
+			builder.setMessage("저장 하시겠습니까?")
+					.setPositiveButton("예", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							
+							
+							if(isEdit == true){
+								if(validCheck() == false){
+									
+									return;
+								}else{
+									dao.update(diaryID, 
+											title.getText().toString(), 
+											mYear, mMonth, mDay, mHour, mMinute, 
+											content.getText().toString(), 
+											picPath[0],
+											picPath[1],
+											picPath[2],
+											picPath[3],
+											picPath[4],
+											picPath[5],
+											musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
+											addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
+											url);
+											Toast.makeText(WriteDiary.this, "수정 완료", 0).show();
+											finish();
+									}
+						}else{
+							if(validCheck() == false){
+								
+								return;
+							}else{
+											dao.insert(title.getText().toString(), 
+														mYear, mMonth, mDay, mHour, mMinute, 
+														content.getText().toString(), 
+														picPath[0],
+														picPath[1],
+														picPath[2],
+														picPath[3],
+														picPath[4],
+														picPath[5],
+														musicPath, mp3Title, mp3Singer, mp3AlbumArtID, 
+														addr.getAddress(), addr.getLatitude(), addr.getLongtude(), 
+														url
+														);
+												Toast.makeText(WriteDiary.this, "등록 완료", 0).show();
+								dao.close();
+								
+								finish();
+								return;
+							}
+						}
+							
+						}
+					})
+					.setNegativeButton("아니오",  new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+							
+						}
+					})
+					.show();
 		}
 	}
 	
 	// 본문이 입력되지 않으면 글이 등록되지 않음.
 	private boolean validCheck() {
 		if(content.getText().toString().equals("")){
+			Toast.makeText(WriteDiary.this, "일기 내용이 없습니다.", 0).show();
+			return false;
+		}
+		if(title.getText().toString().equals("")){
+			Toast.makeText(WriteDiary.this, "일기 제목이 없습니다.", 0).show();
 			return false;
 		}
 		
@@ -352,7 +379,7 @@ public class WriteDiary extends Activity {
 	};
 
 	private void UpdateNow() {
-		dayPickerBtn.setText(String.format("%d/%d/%d", mYear, mMonth, mDay ));
+		dayPickerBtn.setText(String.format("%d.%d.%d", mYear, mMonth, mDay ));
 		datePickerBtn.setText(String.format("%d : %d", mHour, mMinute));
 		
 	}
