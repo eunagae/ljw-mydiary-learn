@@ -15,9 +15,11 @@ import com.example.kr.hkit.mydiary.R;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -61,6 +63,13 @@ public class ReadDiary extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.readdiary);
 
+		
+	}
+	
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
 		getDataFromReadDiary();
 		ViewByIdMustNeed();
 		ViewByIdImg();
@@ -82,7 +91,7 @@ public class ReadDiary extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		dao = DiaryDAO.open(ReadDiary.this);
-		boolean isSuccess = false;
+		
 		switch(item.getItemId()){
 		
 		//글 수정
@@ -94,12 +103,28 @@ public class ReadDiary extends Activity {
 			
 		//글 삭제.
 		case R.id.read_delete_barmenu:
-			isSuccess = dao.delete(diaryInfo.getId());
-			if(isSuccess == true){
-				Toast.makeText(ReadDiary.this, "삭제 완료.", 0).show();
-				dao.close();
-				finish();
-			}
+			
+			new AlertDialog.Builder(this).setMessage("삭제 하겠습니까?")
+								.setPositiveButton("네", new DialogInterface.OnClickListener() {
+									
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										boolean isSuccess = false;
+										isSuccess = dao.delete(diaryInfo.getId());
+										if(isSuccess == true){
+											Toast.makeText(ReadDiary.this, "삭제 완료.", 0).show();
+											dao.close();
+											finish();
+										}	
+									}
+								}).setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+									
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+										
+									}
+								}).show();
 			break;
 		}
 		
